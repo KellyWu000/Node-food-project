@@ -16,7 +16,7 @@ const corsOptions = {
 };
     
     app.use( cors(corsOptions) );
-  
+    app.use('/',express.static(__dirname + '/public'));
     
     //app.use('/reslist',require('./routes/reslist'));路徑錯誤
      app.use('/',require('./routes/reslist'));

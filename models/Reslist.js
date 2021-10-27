@@ -77,13 +77,24 @@ class Reslist {
 
     /* 讀取單筆資料 */
     static async findOne(pk=0) {
-        const sql = `SELECT * FROM ${tableName} WHERE ${pkField}=?`;
-        const [rs] = await db.query(sql, [pk]);
-        if (rs && rs.length === 1) {
-            // return rs[0];
-            return new Reslist(rs[0])
+        // const sql = `SELECT * FROM ${tableName} WHERE ${pkField}=?`;
+        const output = {};
+
+        const sql = `SELECT * FROM restaurant WHERE res_id=?`;
+        const [rs] = await db.query(sql,[pk]);
+
+        if (rs && rs.length) {
+            output.restaurant = rs[0];
+
+            const sql = `SELECT * FROM res_products  WHERE res_id=?`;
+            const [rs2] = await db.query(sql,[pk]);
+
+            output.products = rs2; 
+        } else {
+            output.resturant = [];
         }
-        return null;
+
+        return output;
     }
     toJSON() {
         return this.data;
@@ -94,3 +105,4 @@ class Reslist {
 }
 
 module.exports = Reslist;
+
