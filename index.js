@@ -16,10 +16,13 @@ const corsOptions = {
 };
     
     app.use( cors(corsOptions) );
+    app.use(express.urlencoded({ extended: false }));
+    app.use(express.json());
     app.use('/',express.static(__dirname + '/public'));
     
     //app.use('/reslist',require('./routes/reslist'));路徑錯誤
      app.use('/',require('./routes/reslist'));
+     app.use('/', require('./routes/login'));
     //  app.use('/',require('./routes/reslist/:id'));
     
 app.listen(process.env.PORT);
