@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs'); //密碼加密 看登入傳入的密碼跟註冊的密碼是否吻合
 const jwt = require('jsonwebtoken');
 
-const db = require('./../modules/connect-mysql');
+const db = require('../modules/connect-mysql');
 // const upload = require('./../modules/upload-images');
 
 // const { getListData } = require('./members');
