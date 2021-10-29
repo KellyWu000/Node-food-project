@@ -4,13 +4,13 @@ const router = express.Router();
 
 
 
-router.get('/reslist',async(req,res)=>{
+router.get('/',async(req,res)=>{
     res.json(await Reslist.findAll()); //別代參數因為抓整筆
 })
 
 
 // 讀取單筆
-router.get('/reslist/:id',async (req, res) => {
+router.get('/:id',async (req, res) => {
     const output = {
         success: false,
         data: null,
@@ -21,6 +21,23 @@ router.get('/reslist/:id',async (req, res) => {
     }
     res.json(output);
 } );
+
+//接收經緯度
+router.post('/address', async (req, res)=>{
+    const lat = req.body.latitude;
+    const lng = req.body.longitude;
+    const output = {
+        success: true,
+        data: [lat, lng],
+    };
+    res.json(output)
+
+})
+
+//讀取經緯度
+//跑迴圈  sql裡的30個座標  
+//會迴船一個陣列
+
 
 
 
