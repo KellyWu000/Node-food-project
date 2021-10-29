@@ -97,6 +97,27 @@ class Reslist {
         return output;
     }
 
+    static async findRangeByDistance(lat ,lng , distance) {
+        const sql = `SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(res_lat)) * cos( radians(res_lng ) - radians(?) ) + sin( radians(?) ) * sin( radians( res_lat ) ) ) ) AS distance FROM restaurant HAVING distance <= ? ORDER BY distance`;
+        
+        const [rs] = await db.query(sql, [lat, lng, lat, distance]);
+
+        console.log('##############################')
+        console.log(lat);
+        console.log(lng);
+        console.log(distance);
+        console.log(rs.length)
+        console.log(rs)
+        console.log('##############################')
+
+        if (rs && rs.length) {
+            return rs;
+        }
+
+        return [];
+
+    }
+
     toJSON() {
         return this.data;
     }
@@ -110,7 +131,7 @@ class Reslist {
     // TODO: 把距離用res傳回前端  已經算好的距離回去 
     //TODO 前端再篩選 再做預設
 
-  x
+  
 
     //矩形
     // static SquareDistance(){
