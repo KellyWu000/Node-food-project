@@ -19,7 +19,7 @@ router.post('/login', async (req, res) => {
     }
 
     const [rs] = await db.query("SELECT * FROM members WHERE `email`=?", [req.body.email]);
-    
+
     if (!rs.length) {
         //帳號錯誤
         output.success = false;
@@ -48,17 +48,43 @@ router.post('/signup', async (req, res) => {
     };
     // // TODO: 欄位檢查
     const hash = await bcrypt.hash(req.body.password, 8);
+    //新增會員資料的 sql 語法
     const sql = "INSERT INTO `members`" +
         "(`email`, `password`)" +
         " VALUES (?, ?)";
+    //宣告空的變數提供 sql 語法執行後存放結果
     let result;
     try {
+        //執行 sql 語法將結果放到 result 中
         [result] = await db.query(sql, [
             req.body.email,
             hash,
         ]);
+        //若結果成功筆數=1 表示新增成功
+        //繼續新增點數資料
         if (result.affectedRows === 1) {
             output.success = true;
+            //新增點數資料的 sql 語法
+            const pointSql = "INSERT INTO `member_point`" +
+                "(`member_sid`,`change_point`,`change_type`,`left_point`,`change_reason`,`create_at`)" +
+                " VALUES (?, ?, ?, ?, ?, NOW())";
+            //宣告空的變數提供 sql 語法執行後存放結果
+            let pointResult;
+            //執行 sql 語法將結果放到 pointResult 中
+            [pointResult] = await db.query(pointSql, [
+                result.insertId,
+                50,
+                'GET', // GET : 得到 ; USE : 使用
+                50,
+                '新進會員贈點'
+            ]);
+
+            if (pointResult.affectedRows === 1) {
+                output.success = true;
+            }else{
+                output.success = false;
+                output.error = '無法新增點數資料';
+            }
         } else {
             output.error = '無法新增會員';
         }
@@ -121,7 +147,7 @@ router.get('/memberprofile/:sid', async (req, res) => {
     const sql = `SELECT * FROM members WHERE sid = ?`;
     const [rs] = await db.query(sql, [req.params.sid]);
 
-    if (rs.length > 0 ) { 
+    if (rs.length > 0) {
         res.json(rs);  //若有查到資料將查到的資料傳回前端
     } else {
         res.redirect('/login'); //如果沒有那筆資料就轉到登入頁
@@ -131,7 +157,7 @@ router.get('/memberprofile/:sid', async (req, res) => {
 //修改資料
 router.route('/edit/:sid')
     .get(async (req, res) => { //呈現要修改資料的表單 如果沒有資料就呈現列表頁
-        
+
     })
     .post(async (req, res) => {
         // TODO: 欄位檢查
