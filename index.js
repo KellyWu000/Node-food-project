@@ -21,8 +21,8 @@ const corsOptions = {
     app.use(express.json());
     app.use('/',express.static(__dirname + '/public'));
     
-    //app.use('/reslist',require('./routes/reslist'));路徑錯誤
-     app.use('/reslist',require('./routes/reslist'));
+    app.use('/reslist',require('./routes/reslist'));
+    app.use('/reslist/address',require('./routes/reslist'));
      app.use('/', require('./routes/login'));
      app.use('/cart',require('./routes/cart'));
      app.use('/',require('./routes/ArtExercise'));

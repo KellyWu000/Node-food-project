@@ -22,13 +22,19 @@ router.get('/:id',async (req, res) => {
     res.json(output);
 } );
 
+
 //接收經緯度
-router.post('/address', async (req, res)=>{
+router.post('/address', async (req, res)=>{  
     const lat = req.body.latitude;
     const lng = req.body.longitude;
+    const distance = req.body.distance ? req.body.distance : 5;
+
+
+    const arr = await Reslist.findRangeByDistance(lat, lng, distance);
+
     const output = {
         success: true,
-        data: [lat, lng],
+        data: arr,
     };
     res.json(output)
 
@@ -41,4 +47,5 @@ router.post('/address', async (req, res)=>{
 
 
 
- module.exports = router; //改了router
+
+ module.exports = router; 
