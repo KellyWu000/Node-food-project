@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs'); //密碼加密 看登入傳入的密碼跟註冊的密碼是否吻合
 const jwt = require('jsonwebtoken');
 
-const db = require('./../modules/connect-mysql');
+const db = require('../modules/connect-mysql');
 // const upload = require('./../modules/upload-images');
 
 // const { getListData } = require('./members');
@@ -11,29 +11,31 @@ const router = express.Router();
 
 // 登入
 router.post('/login', async (req, res) => {
-    // TODO: 欄位檢查
-    //把email拿進來 找到那筆資料（因為是唯一鍵所以只會拿到一筆或沒有）
-    const output ={
+
+    const output = {
         success: false,
+        token: null,
         id: 0
     }
+
     const [rs] = await db.query("SELECT * FROM members WHERE `email`=?", [req.body.email]);
-
-    if(!rs.length){
+    
+    if (!rs.length) {
         //帳號錯誤
-        // return res.json({success:false}); //如果沒有資料就直接回應沒有登入成功
         output.success = false;
     }
 
-    const correct = await bcrypt.compare(req.body.password, rs[0].password)
-    if (correct){
-        // const{id, email} = rs[0];
-        // req.session.member = { id, email};
+    const correct = await bcrypt.compare(req.body.password, rs[0].password);
+    if (correct) {
+        const { id, email } = rs[0];
+
         output.success = true;
+        output.token = await jwt.sign({ id, email }, process.env.JWT_SECRET);
         output.id = rs[0].sid;
-    }else{
+    } else {
         output.success = false;
     }
+
     res.json(output);
 });
 
