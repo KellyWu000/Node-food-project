@@ -12,13 +12,13 @@ class Product {
         this.data = defaultObj;
     }
     // 讀取所有資料 + 篩選功能
-
     static async findAll(options={}){
         let op = {
             perPage: 6,
             page:1,
             cate: null,
             keyword:'',
+            filter:'',
             ...options
         }
         const output = {
@@ -28,6 +28,7 @@ class Product {
             totalPages:0,
             cate:null,
             keyword:'',
+            filter:'',
             rows:[],
         }
 
@@ -42,11 +43,22 @@ class Product {
                 output.cate= parseInt(op.cate)
             }
         }
-        // if(op.cate){
-        //     where += ' AND cate_id='+ parseInt(op.cate)+ ' '; //建議後面接空格,因為where會一直接字串
-        //     output.cate= parseInt(op.cate)
-        // }
-        
+        if(op.filter){
+            if(op.filter==="高蛋白"){
+                where += ` ORDER BY ${tableName}.content_protein DESC `; 
+                output.filter= op.filter
+            }
+            if(op.filter==="低熱量"){
+                where += ` ORDER BY ${tableName}.content_cal ASC `; 
+                output.filter= op.filter
+            }
+            if(op.filter==="低醣"){
+                where += ` ORDER BY ${tableName}.content_carbon ASC `; 
+                output.filter= op.filter
+            }
+        }else{
+            output.filter=''
+        }
         // 關鍵字
         if(op.keyword){
             // 關鍵字搜尋要做跳脫
