@@ -27,8 +27,8 @@ router.get('/:id',async (req, res) => {
 router.post('/address', async (req, res)=>{  
     const lat = req.body.latitude;
     const lng = req.body.longitude;
-    const distance = req.body.distance ? req.body.distance : 5;
-
+    const distance = req.body.distance ? req.body.distance : 3;   
+  
 
     const arr = await Reslist.findRangeByDistance(lat, lng, distance);
 

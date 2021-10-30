@@ -133,10 +133,7 @@ class Reslist {
 
   
 
-    //矩形
-    // static SquareDistance(){
-    //     let 
-    // }
+   
 
 }
 
