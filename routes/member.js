@@ -11,7 +11,6 @@ const router = express.Router();
 
 // 登入
 router.post('/login', async (req, res) => {
-
     const output = {
         success: false,
         token: null,
@@ -81,7 +80,7 @@ router.post('/signup', async (req, res) => {
 
             if (pointResult.affectedRows === 1) {
                 output.success = true;
-            }else{
+            } else {
                 output.success = false;
                 output.error = '無法新增點數資料';
             }
@@ -155,36 +154,32 @@ router.get('/memberprofile/:sid', async (req, res) => {
 });
 
 //修改資料
-router.route('/edit/:sid')
-    .get(async (req, res) => { //呈現要修改資料的表單 如果沒有資料就呈現列表頁
+router.post('/edit', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    }
 
-    })
-    .post(async (req, res) => {
-        // TODO: 欄位檢查
-        const output = {
-            success: false,
-            postData: req.body,
-        }
+    const input = { ...req.body };
+    const sql = "UPDATE members SET ? WHERE sid=?";
 
-        const input = { ...req.body };
-        const sql = "UPDATE `members` SET ? WHERE sid=?";
-        let result = {};
-        // 處理修改資料時可能的錯誤
-        try {
-            [result] = await db.query(sql, [input, req.params.sid]);
-        } catch (ex) {
-            output.error = ex.toString();
-        }
-        output.result = result;
-        if (result.affectedRows === 1) {
-            if (result.changedRows === 1) {
-                output.success = true;
-            } else {
-                output.error = '資料沒有變更';
-            }
-        }
+    let result;
 
-        res.json(output);
-    });
+    // 處理修改資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [input, input.sid]);
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+
+    if (result.affectedRows === 1 && result.changedRows === 1) {
+        output.success = true;
+    }
+    else {
+        output.error = '資料沒有變更';
+    }
+
+    res.json(output);
+});
 
 module.exports = router;
