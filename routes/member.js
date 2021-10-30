@@ -1,13 +1,12 @@
 const express = require('express');
+const router = express.Router();
+const db = require('../modules/connect-mysql');
 const bcrypt = require('bcryptjs'); //密碼加密 看登入傳入的密碼跟註冊的密碼是否吻合
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
 
-const db = require('../modules/connect-mysql');
 // const upload = require('./../modules/upload-images');
-
 // const { getListData } = require('./members');
-
-const router = express.Router();
 
 // 登入
 router.post('/login', async (req, res) => {
@@ -38,19 +37,20 @@ router.post('/login', async (req, res) => {
     res.json(output);
 });
 
-// 註冊
+//註冊
 router.post('/signup', async (req, res) => {
     const output = {
         success: false,
-        postData: req.body,
         error: ''
     };
-    // // TODO: 欄位檢查
+
     const hash = await bcrypt.hash(req.body.password, 8);
+
     //新增會員資料的 sql 語法
     const sql = "INSERT INTO `members`" +
         "(`email`, `password`)" +
         " VALUES (?, ?)";
+
     //宣告空的變數提供 sql 語法執行後存放結果
     let result;
     try {
@@ -59,16 +59,20 @@ router.post('/signup', async (req, res) => {
             req.body.email,
             hash,
         ]);
+
         //若結果成功筆數=1 表示新增成功
         //繼續新增點數資料
         if (result.affectedRows === 1) {
             output.success = true;
+
             //新增點數資料的 sql 語法
             const pointSql = "INSERT INTO `member_point`" +
                 "(`member_sid`,`change_point`,`change_type`,`left_point`,`change_reason`,`create_at`)" +
                 " VALUES (?, ?, ?, ?, ?, NOW())";
+
             //宣告空的變數提供 sql 語法執行後存放結果
             let pointResult;
+
             //執行 sql 語法將結果放到 pointResult 中
             [pointResult] = await db.query(pointSql, [
                 result.insertId,
@@ -88,16 +92,53 @@ router.post('/signup', async (req, res) => {
             output.error = '無法新增會員';
         }
     } catch (ex) {
-        console.log(ex);
         output.error = 'Email 已被使用過';
     }
+
     res.json(output);
 });
 
-//登出
-router.get('/logout', (req, res) => {
-    delete req.session.member;
-    res.redirect('/');
+//讀取會員資料
+router.get('/memberprofile/:sid', async (req, res) => {
+    const sql = `SELECT * FROM members WHERE sid = ?`;
+    let [rs] = await db.query(sql, [req.params.sid]);
+
+    rs[0].birthday = moment(rs[0].birthday).format('YYYY-MM-DD');
+
+    if (rs.length > 0) {
+        res.json(rs);  //若有查到資料將查到的資料傳回前端
+    } else {
+        res.redirect('/login'); //如果沒有那筆資料就轉到登入頁
+    }
+});
+
+//修改資料
+router.post('/edit', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    }
+
+    const input = { ...req.body };
+    const sql = "UPDATE members SET ? WHERE sid=?";
+
+    let result;
+
+    // 處理修改資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [input, input.sid]);
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+
+    if (result.affectedRows === 1 && result.changedRows === 1) {
+        output.success = true;
+    }
+    else {
+        output.error = '資料沒有變更';
+    }
+
+    res.json(output);
 });
 
 //把資料加密成token丟給用戶端
@@ -139,46 +180,6 @@ router.get('/get-data-jwt', async (req, res) => {
     } else {
         output.error = '沒有 token或者token不合法';
     }
-    res.json(output);
-});
-
-router.get('/memberprofile/:sid', async (req, res) => {
-    const sql = `SELECT * FROM members WHERE sid = ?`;
-    const [rs] = await db.query(sql, [req.params.sid]);
-
-    if (rs.length > 0) {
-        res.json(rs);  //若有查到資料將查到的資料傳回前端
-    } else {
-        res.redirect('/login'); //如果沒有那筆資料就轉到登入頁
-    }
-});
-
-//修改資料
-router.post('/edit', async (req, res) => {
-    const output = {
-        success: false,
-        error: ''
-    }
-
-    const input = { ...req.body };
-    const sql = "UPDATE members SET ? WHERE sid=?";
-
-    let result;
-
-    // 處理修改資料時可能的錯誤
-    try {
-        [result] = await db.query(sql, [input, input.sid]);
-    } catch (ex) {
-        output.error = ex.toString();
-    }
-
-    if (result.affectedRows === 1 && result.changedRows === 1) {
-        output.success = true;
-    }
-    else {
-        output.error = '資料沒有變更';
-    }
-
     res.json(output);
 });
 
