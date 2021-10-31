@@ -25,8 +25,9 @@ const corsOptions = {
      app.use('/',require('./routes/reslist'));
      app.use('/', require('./routes/login'));
      app.use('/cart',require('./routes/cart'));
+     
      app.use('/',require('./routes/ArtExercise'));
-     app.use('/',require('./routes/ArtFood'));
+     app.use('/ArtFood',require('./routes/ArtFood'));
      app.use('/',require('./routes/ArtRecipe'));
     //  app.use('/',require('./routes/reslist/:id'));
     

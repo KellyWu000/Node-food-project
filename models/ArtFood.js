@@ -5,7 +5,7 @@ const pkField = 'sid';
 
 class ArtFood {
     constructor(defaultObj={}) {
-        this.data = defaultObj;  // 抓讀取的參數
+        this.data = defaultObj;  
     }
 
 
@@ -21,32 +21,30 @@ class ArtFood {
     /* 讀取單筆資料 */
     static async findOne(pk=0) {
         // const sql = `SELECT * FROM ${tableName} WHERE ${pkField}=?`;
-        const output = {};
-
+        // const output = {};
         const sql = `SELECT * FROM ${tableName} WHERE ${pkField} =?`;
-        const [rs] = await db.query(sql,[pk]);
+        const [rs] = await db.query(sql, pk );
 
-        if (rs && rs.length) {
-            output.ArtFood = rs[0];
+        if (rs && rs.length === 1 ) {
+            // output.ArtFood = rs[0];
+            return new ArtFood(rs[0])
 
-            const sql = `SELECT * FROM ${tableName} WHERE ${pkField} =?`;
-            const [rs2] = await db.query(sql,[pk]);
+            // const sql = `SELECT * FROM ${tableName} WHERE ${pkField} =?`;
+            // const [rs2] = await db.query(sql,[pk]);
 
-            output.products = rs2; 
-        } else {
-            output.ArtFood = [];
-        }
+            // output.products = rs2; 
+        } 
 
         return output;
     }
+
+
     toJSON() {
         return this.data;
     }
     toString() {
         return JSON.stringify(this.data, null, 4);
     }
-
-
 
 }
 
