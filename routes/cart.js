@@ -1,11 +1,7 @@
 const express = require("express");
 const { getList } = require("../models/Cart");
-<<<<<<< HEAD
 const Cart = require("../models/Cart");
 const axios = require('axios');
-=======
-const Cart = require("./../models/Cart");
->>>>>>> f0f9b569167e760354dac611a833b87dd173b094
 
 const router = express.Router();
 
@@ -101,13 +97,7 @@ router.get("/addList/:id", async (req, res) => {
 
 
 // 新增 Order_Detail
-<<<<<<< HEAD
 router.post("/addList", async (req, res) => {  
-=======
-router.post("/addList", async (req, res) => {
-   
-    
->>>>>>> f0f9b569167e760354dac611a833b87dd173b094
     const output={
       success:'false',
       error:''
@@ -121,10 +111,7 @@ router.post("/addList", async (req, res) => {
       req.body.E_Mail,
       req.body.Order_Address,
       req.body.Invoice_Type,
-<<<<<<< HEAD
       req.body.Invoice_Number,
-=======
->>>>>>> f0f9b569167e760354dac611a833b87dd173b094
       req.body.Payment_Type,
       req.body.Order_Remark,))
   });
@@ -147,7 +134,6 @@ router.post("/addList", async (req, res) => {
   });
   
 
-<<<<<<< HEAD
   // 抓取 7-11 資料
   router.post('/store', async (req, res) => {
     // const obj ={
@@ -170,8 +156,6 @@ router.post("/addList", async (req, res) => {
     res.send(response.data);
   });
 
-=======
->>>>>>> f0f9b569167e760354dac611a833b87dd173b094
 
 
 // // 刪除項目(老師)
