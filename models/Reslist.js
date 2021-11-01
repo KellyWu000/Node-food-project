@@ -77,20 +77,66 @@ class Reslist {
 
     /* 讀取單筆資料 */
     static async findOne(pk=0) {
-        const sql = `SELECT * FROM ${tableName} WHERE ${pkField}=?`;
-        const [rs] = await db.query(sql, [pk]);
-        if (rs && rs.length === 1) {
-            // return rs[0];
-            return new Reslist(rs[0])
+        // const sql = `SELECT * FROM ${tableName} WHERE ${pkField}=?`;
+        const output = {};
+
+        const sql = `SELECT * FROM restaurant WHERE res_id=?`;
+        const [rs] = await db.query(sql,[pk]);
+
+        if (rs && rs.length) {
+            output.restaurant = rs[0];
+
+            const sql = `SELECT * FROM res_products  WHERE res_id=?`;
+            const [rs2] = await db.query(sql,[pk]);
+
+            output.products = rs2; 
+        } else {
+            output.resturant = [];
         }
-        return null;
+
+        return output;
     }
+
+    static async findRangeByDistance(lat ,lng , distance) {
+        const sql = `SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(res_lat)) * cos( radians(res_lng ) - radians(?) ) + sin( radians(?) ) * sin( radians( res_lat ) ) ) ) AS distance FROM restaurant HAVING distance <= ? ORDER BY distance`;
+        
+        const [rs] = await db.query(sql, [lat, lng, lat, distance]);
+
+        console.log('##############################')
+        console.log(lat);
+        console.log(lng);
+        console.log(distance);
+        console.log(rs.length)
+        console.log(rs)
+        console.log('##############################')
+
+        if (rs && rs.length) {
+            return rs;
+        }
+
+        return [];
+
+    }
+
     toJSON() {
         return this.data;
     }
     toString() {
         return JSON.stringify(this.data, null, 4);
     }
+    // TODO : 轉成JS  POW Math.sin COS  asin sqrt round  ok 
+    // TODO: lat1,lng1 => 前端來的座標 呼叫 
+    // TODO: lat2,lng2 => SQL來的座標   
+    // TODO: 算出目前位置跟餐廳的距離
+    // TODO: 把距離用res傳回前端  已經算好的距離回去 
+    //TODO 前端再篩選 再做預設
+
+  
+
+   
+
 }
 
+
 module.exports = Reslist;
+

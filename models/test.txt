@@ -1,0 +1,2 @@
+INSERT INTO `restaurants`(`res_id`, `res_name`, `res_introduce`, `res_tel`, `res_starttime`, `res_endtime`, `res_address`, `res_aveprice`, `res_rate`, `res_lng`, `res_lat`, `res_img`) 
+VALUES (NULL','生活倉廚','生活倉廚總是站在每位食用者的立場來料理每一個食材，現點現做，手工修清所有嚴選原肉品。','02-27328101','10:30','19:30','臺北市大安區大安路一段51巷17號1樓','260','4.9','25.043384586925278','121.54695832619886','NULL')

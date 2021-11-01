@@ -109,7 +109,11 @@ class Cart {
 
 
   // 新增 Member_Detail
+<<<<<<< HEAD
   static async addListDetail(Sid,Member_id,Order_Name,Order_Phone,E_Mail,Order_Address,Invoice_Type,Invoice_Number,Payment_Type,Order_Remark) {
+=======
+  static async addListDetail(Sid,Member_id,Order_Name,Order_Phone,E_Mail,Order_Address,Invoice_Type,Payment_Type,Order_Remark) {
+>>>>>>> f0f9b569167e760354dac611a833b87dd173b094
 
     const output = {
       success: false,
@@ -117,10 +121,17 @@ class Cart {
     };
 
        // 不要重複輸入資料
+<<<<<<< HEAD
        if (await Cart.getListDetail(Sid)) {
         output.error = "資料重複了";
         return output;
       }
+=======
+      //  if (await Cart.getList(Order_Sid)) {
+      //   output.error = "資料重複了";
+      //   return output;
+      // }
+>>>>>>> f0f9b569167e760354dac611a833b87dd173b094
 
           //參數都必須要有資料
     const obj = {
@@ -131,7 +142,10 @@ class Cart {
       E_Mail,
       Order_Address,
       Invoice_Type,
+<<<<<<< HEAD
       Invoice_Number,
+=======
+>>>>>>> f0f9b569167e760354dac611a833b87dd173b094
       Payment_Type,
       Order_Remark
     };
@@ -141,7 +155,11 @@ class Cart {
     output.success = !!r.affectedRows ? true : false;
 
      // 確認是否有成功加入購物車
+<<<<<<< HEAD
      output.cartList=await Cart.getListDetail();
+=======
+    //  output.cartList=await Cart.getList();
+>>>>>>> f0f9b569167e760354dac611a833b87dd173b094
 
      return output;
   }
@@ -187,8 +205,11 @@ class Cart {
 
      return output;
   }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> f0f9b569167e760354dac611a833b87dd173b094
 }
 
 module.exports = Cart;
