@@ -20,10 +20,6 @@ const corsOptions = {
   
     
  
-
-    //  購物車
-     app.use("/cart",require('./routes/cart'));
-  
     
 // app.listen(process.env.PORT);
 
