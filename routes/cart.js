@@ -137,23 +137,20 @@ router.post("/addList", async (req, res) => {
 
   // 抓取 7-11 資料
   router.post('/store', async (req, res) => {
-    // const obj ={
 
-    // }
     
     const params = new URLSearchParams({
       // ...obj,
       commandid: req.body.commandid,
       city: req.body.city,
       town: req.body.town,
-      roadname:req.body.roadname,
     });
   
     const response = await axios.post(
       'https://emap.pcsc.com.tw/EMapSDK.aspx',
       params
     );
-    console.log(params.toString())
+    // console.log(params.toString())
     res.send(response.data);
   });
 
