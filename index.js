@@ -15,7 +15,6 @@ const corsOptions = {
         cb(null, true);
     }
 };
-<<<<<<< HEAD
     
     app.use( cors(corsOptions) );
   
@@ -29,8 +28,6 @@ const corsOptions = {
     //  app.use('/',require('./routes/reslist/:id'));
     
 app.listen(process.env.PORT);
-=======
->>>>>>> f0f9b569167e760354dac611a833b87dd173b094
 
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
