@@ -19,23 +19,20 @@ const corsOptions = {
     app.use( cors(corsOptions) );
   
     
-    //app.use('/reslist',require('./routes/reslist'));路徑錯誤
-    // 餐廳
-     app.use('/',require('./routes/reslist'));
+ 
 
     //  購物車
      app.use("/cart",require('./routes/cart'));
-    //  app.use('/',require('./routes/reslist/:id'));
+  
     
-app.listen(process.env.PORT);
+// app.listen(process.env.PORT);
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/', express.static(__dirname + '/public'));
 //商城路由
 app.use('/product', require('./routes/product'));
-
 app.use('/reslist', require('./routes/reslist'));
 app.use('/member', require('./routes/member'));
 app.use('/cart', require('./routes/cart'));
