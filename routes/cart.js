@@ -58,6 +58,7 @@ router.post("/", async (req, res) => {
   }
   
   res.json(await Cart.addtmpList(
+    req.body.Sid,
     req.body.Order_Sid,
     req.body.Member_id,
     req.body.Product_id,
