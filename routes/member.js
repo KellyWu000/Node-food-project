@@ -141,6 +141,21 @@ router.post('/edit', async (req, res) => {
     res.json(output);
 });
 
+//查詢商品清單
+router.get('/favorite-product-get/:memberid', async (req, res) => {
+    const sql = `SELECT product.sid,
+                        product.name, 
+                        product.price, 
+                        product.detail_img 
+                   FROM member_fav_product member
+                   JOIN product_food product on member.product_id = product.sid
+                  WHERE member.member_id = ?  
+               ORDER BY member.create_at DESC`;
+    let [rs] = await db.query(sql, [req.params.memberid]);
+
+    res.json(rs);
+});
+
 //把資料加密成token丟給用戶端
 router.post('/login-jwt', async (req, res) => {
     const output = {
