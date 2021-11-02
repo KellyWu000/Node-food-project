@@ -1,16 +1,16 @@
 require('dotenv').config();
-const express= require('express')
+const express = require('express')
 const db = require('./modules/connect-mysql');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
-const app= express()
+const app = express()
 
 
 
 const corsOptions = {
     credentials: true,
-    origin: (origin, cb)=>{
+    origin: (origin, cb) => {
         console.log(`origin: ${origin}`);
         cb(null, true);
     }
@@ -25,15 +25,22 @@ const corsOptions = {
     
     //app.use('/reslist',require('./routes/reslist'));路徑錯誤
      app.use('/',require('./routes/reslist'));
+  
     
-    app.use('/reslist',require('./routes/reslist'));
-    app.use('/reslist/address',require('./routes/reslist'));
-     app.use('/member', require('./routes/member'));
-     app.use('/cart',require('./routes/cart'));
-     app.use('/',require('./routes/ArtExercise'));
-     app.use('/',require('./routes/ArtFood'));
-     app.use('/',require('./routes/ArtRecipe'));
-    //  app.use('/',require('./routes/reslist/:id'));
-    
-app.listen(process.env.PORT);
 
+    
+
+// app.use(cors(corsOptions));
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use('/', express.static(__dirname + '/public'));
+//商城路由
+app.use('/product', require('./routes/product'));
+app.use('/reslist', require('./routes/reslist'));
+app.use('/member', require('./routes/member'));
+app.use('/cart', require('./routes/cart'));
+app.use('/ArtExercise', require('./routes/ArtExercise'));
+app.use('/ArtFood', require('./routes/ArtFood'));
+app.use('/ArtRecipe', require('./routes/ArtRecipe'));
+
+app.listen(process.env.PORT);

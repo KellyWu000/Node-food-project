@@ -86,7 +86,7 @@ class Reslist {
         if (rs && rs.length) {
             output.restaurant = rs[0];
 
-            const sql = `SELECT * FROM res_products  WHERE res_id=?`;
+            const sql = `SELECT * FROM res_products  WHERE res_id=? `;
             const [rs2] = await db.query(sql,[pk]);
 
             output.products = rs2; 
@@ -96,6 +96,17 @@ class Reslist {
 
         return output;
     }
+
+    static async findAll(options = {}) {
+      
+        const sql = `SELECT * FROM restaurant WHERE res_id IN (1,2,23)`;
+        const [rs] = await db.query(sql);
+        if (rs && rs.length) {
+            return rs;
+        }
+        return null;
+    }
+
 
     static async findRangeByDistance(lat ,lng , distance) {
         const sql = `SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(res_lat)) * cos( radians(res_lng ) - radians(?) ) + sin( radians(?) ) * sin( radians( res_lat ) ) ) ) AS distance FROM restaurant HAVING distance <= ? ORDER BY distance`;
@@ -133,10 +144,7 @@ class Reslist {
 
   
 
-    //矩形
-    // static SquareDistance(){
-    //     let 
-    // }
+   
 
 }
 
