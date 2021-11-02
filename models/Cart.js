@@ -1,3 +1,4 @@
+const { now } = require("moment");
 const db = require("./../modules/connect-mysql");
 
 const tableName = "order_temp";
@@ -8,7 +9,8 @@ const pkField = "Order_Sid";
 const DField = "Sid";
 const MemberField="Member_id";
 const MField="member_point";
-
+let date=new Date()
+console.log('日期',date)
 class Cart {
   constructor(defaultObj = {}) {
     this.data = defaultObj;
@@ -228,11 +230,38 @@ class Cart {
 
 // 讀取所有 member_point
 static async getMPList() {
-  const sql=`SELECT mp.*,m.email,m.mobile,m.address,m.name FROM member_point mp LEFT JOIN members m ON m.sid=mp.sid ORDER BY create_at DESC`;
+  const sql=`SELECT mp.*,m.email,m.mobile,m.address,m.name FROM member_point mp LEFT JOIN members m ON m.sid=mp.member_sid ORDER BY create_at DESC`;
   const [rs] = await db.query(sql);
   return rs;
 }
 
+// 新增單筆 member_point
+static async modifyPoint(sid,member_sid,change_point,change_type,left_point,change_reason,create_at) {
+
+  const output = {
+    success: false,
+    error: "",
+  };
+
+  create_at=date;
+ 
+//參數都必須要有資料
+  const obj = {
+    sid,
+    member_sid,
+    change_point,
+    change_type,
+    left_point,
+    change_reason,
+    create_at,
+  };
+
+  const sql = `INSERT INTO member_point SET ?`;
+  const [r] = await db.query(sql,[obj]);
+  output.success = !!r.affectedRows ? true : false;
+
+   return output;
+}
 
 }
 
