@@ -140,7 +140,7 @@ router.post('/edit', async (req, res) => {
 
     res.json(output);
 });
-
+// ---------------------商品追蹤清單---------------------------
 //查詢商品清單
 router.get('/favorite-product-get/:memberid', async (req, res) => {
     const sql = `SELECT product.sid,
@@ -154,6 +154,27 @@ router.get('/favorite-product-get/:memberid', async (req, res) => {
     let [rs] = await db.query(sql, [req.params.memberid]);
 
     res.json(rs);
+});
+
+//移除商品清單
+router.delete('/favorite-product-delete/:productid', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = `DELETE FROM member_fav_product WHERE product_id = ?`;
+    let result;
+
+    // 處理刪除資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [req.params.productid]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
 });
 
 //把資料加密成token丟給用戶端
