@@ -99,7 +99,7 @@ class Reslist {
 
     static async findAll(options = {}) {
       
-        const sql = `SELECT * FROM restaurant WHERE res_id IN (1,2,23)`;
+        const sql = `SELECT * FROM restaurant WHERE res_id IN (1,2,19)`;
         const [rs] = await db.query(sql);
         if (rs && rs.length) {
             return rs;
