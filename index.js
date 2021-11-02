@@ -3,6 +3,7 @@ const express = require('express')
 const db = require('./modules/connect-mysql');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+
 const app = express()
 
 const corsOptions = {

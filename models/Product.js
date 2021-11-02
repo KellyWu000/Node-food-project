@@ -19,6 +19,7 @@ class Product {
             cate: null,
             keyword:'',
             filter:'',
+            target:'',
             ...options
         }
         const output = {
@@ -29,12 +30,12 @@ class Product {
             cate:null,
             keyword:'',
             filter:'',
+            target:'',
             rows:[],
         }
 
         let where = ' WHERE 1 ';
-        // 分類, 如果有值才去判斷是哪個分類
-
+        // 商品分類, 如果有值才去判斷是哪個分類
         if(op.cate){
             if(op.cate==="0"){
                 output.cate= op.cate
@@ -43,6 +44,7 @@ class Product {
                 output.cate= parseInt(op.cate)
             }
         }
+        // 篩選器
         if(op.filter){
             if(op.filter==="高蛋白"){
                 where += ` ORDER BY ${tableName}.content_protein DESC `; 
@@ -65,6 +67,26 @@ class Product {
             where += ' AND name LIKE ' + db.escape('%' + op.keyword+ '%') +' ';
             output.keyword=op.keyword
         }
+        // 飲食目標
+        if(op.target){
+            // 有值的話把設定比數為三筆
+            op.perPage=3
+            op.page=1
+            output.perPage=op.perPage
+            output.page=op.page
+
+            if(op.target==='增肌減脂'){
+                where += ` ORDER BY ${tableName}.content_protein DESC `; 
+                output.target=op.target;
+            }
+            if(op.target==='變瘦'){
+                where += ` ORDER BY ${tableName}.content_cal ASC `; 
+                output.target=op.target;
+            }
+        }else{
+            output.target=''
+        }
+
 
         const t_sql = `SELECT COUNT(1) totalRows FROM ${tableName} `+ where
         const [t_rs] = await db.query(t_sql)
@@ -76,6 +98,42 @@ class Product {
             // 設定總頁數
             output.totalPages = Math.ceil(totalRows/op.perPage);
             // 拿到所有資料
+            const sql = `SELECT * FROM ${tableName}  ${where} LIMIT ${(op.page-1)*(op.perPage)}, ${op.perPage}`;
+            const [rs] = await db.query(sql)
+            output.rows = rs;
+        }
+        return output;
+    }
+
+    // 只篩選三筆給客製化用
+    static async findThree(options={}){
+        let op = {
+            perPage:3,
+            page:1,
+            target:'',
+            ...options
+        }
+        const output = {
+            perPage:op.perPage,
+            page:op.page,
+            target:'',
+            rows:[],
+        }
+
+        let where = 'WHERE 1';
+        if(op.target){
+            if(op.target==='增肌減脂'){
+                where += ` ORDER BY ${tableName}.content_protein DESC `; 
+                output.target=op.target;
+            }
+            if(op.target==='變瘦'){
+                where += ` ORDER BY ${tableName}.content_cal ASC `; 
+                output.target=op.target;
+            }
+        }else{
+            output.target=''
+        }
+        if(op.target){
             const sql = `SELECT * FROM ${tableName}  ${where} LIMIT ${(op.page-1)*(op.perPage)}, ${op.perPage}`;
             const [rs] = await db.query(sql)
             output.rows = rs;

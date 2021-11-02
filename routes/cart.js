@@ -5,33 +5,21 @@ const axios = require('axios');
 
 const router = express.Router();
 
-// router.use((req, res, next) => {
+// router.post("/jwt",async(req, res, next) => {
 //   // 判斷有沒有通過 jwt 驗證
 //   if (req.myAuth && req.myAuth.id) {
+//     console.log('有過')
 //     next();
 //   } else {
 //     res.json({success:'false',error:"沒有 token 或者 token 不合法"});
 //   }
 // });
 
-// 新增項目(老師)
-// router.post("/", async (req, res) => {
-// // req.body.product_id
-// // req.body.quantity
 
-// const output={
-//   success:'false',
-//   error:''
-// }
-
-// res.json(await Cart.add(req.myAuth.id, req.body.product_id,req.body.quantity))
-// });
-
-// 修改項目(老師)
-// router.put("/:id", async (req, res) => {
-//   res.json(await Cart.update(req.myAuth.id, req.body.product_id,req.body.quantity))
-
-// });
+// 讀取 Member_Point
+router.get("/memberpoint", async (req, res) => {
+  res.json(await Cart.getMPList())
+});
 
 
 // 讀取單筆 Order_Temp
@@ -43,6 +31,24 @@ router.get("/:id", async (req, res) => {
 // 讀取所有 Order_Temp
 router.get("/", async (req, res) => {
   res.json(await Cart.getFullList())
+});
+
+// 新增 Member Point
+router.post("/modifyPoint", async (req, res) => {  
+  const output={
+    success:'false',
+    error:''
+  }
+  
+  res.json(await Cart.modifyPoint(
+    req.body.sid,
+    req.body.member_sid,
+    req.body.change_point,
+    req.body.change_type,
+    req.body.left_point,
+    req.body.change_reason,
+    req.body.create_at,
+   ))
 });
 
 
@@ -152,10 +158,10 @@ router.post("/addDetail", async (req, res) => {
    ))
 });
 
-  
 
-  // 抓取 7-11 資料
-  router.post('/store', async (req, res) => {
+  
+// 抓取 7-11 資料
+router.post('/store', async (req, res) => {
 
     
     const params = new URLSearchParams({
@@ -171,27 +177,7 @@ router.post("/addDetail", async (req, res) => {
     );
     // console.log(params.toString())
     res.send(response.data);
-  });
-
-
-
-// // 刪除項目(老師)
-// router.delete("/:id", async (req, res) => {
-//   res.json(await Cart.remove(req.myAuth.id, req.body.product_id,req.body.quantity))
-// });
-
-
-
-// (老師)
-// router.delete("/", async (req, res) => {
-//   res.json(await Cart.clear(req.myAuth.id))
-
-// });
-
-// router.delete("/", async (req, res) => {
-//   res.json(await Cart.clear())
-
-// });
+ });
 
 
 
