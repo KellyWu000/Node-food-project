@@ -7,6 +7,7 @@ const tableDetailList="order_detail";
 const pkField = "Order_Sid";
 const DField = "Sid";
 const MemberField="Member_id";
+const MField="member_point";
 
 class Cart {
   constructor(defaultObj = {}) {
@@ -150,7 +151,7 @@ class Cart {
      return output;
   }
 
-   // 讀取 Member_Detail 訂購人 
+// 讀取 Member_Detail 訂購人 
    static async getListDetail(Member_id) {
     const sql = `SELECT * FROM ${tableMember} WHERE ${MemberField}=?`;
     const [rs] = await db.query(sql,[Member_id]);
@@ -192,6 +193,7 @@ class Cart {
      return output;
   }
 
+  // 新增 Order_Detail 
   static async addDetail(Sid,Order_Sid,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
     const output = {
       success: false,
@@ -223,6 +225,13 @@ class Cart {
 
      return output;
   }
+
+// 讀取所有 member_point
+static async getMPList() {
+  const sql=`SELECT mp.*,m.email,m.mobile,m.address,m.name FROM member_point mp LEFT JOIN members m ON m.sid=mp.sid ORDER BY create_at DESC`;
+  const [rs] = await db.query(sql);
+  return rs;
+}
 
 
 }
