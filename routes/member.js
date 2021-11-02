@@ -174,6 +174,10 @@ router.get('/memberpoint', async (req, res) => {
     const sql = `SELECT * FROM member_point WHERE member_sid = ?`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
+    rs.forEach((value) => {
+        value.create_at = moment(value.create_at).format('YYYY-MM-DD');
+    })
+
     output.success = true;
     output.data = rs;
 
