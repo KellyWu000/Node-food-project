@@ -9,7 +9,7 @@ router.get('/',async(req,res)=>{
 })
 
 
-// 讀取單筆
+// 讀取單筆 盡量前面再加一個路徑不然會無法辨別 
 router.get('/:id',async (req, res) => {
     const output = {
         success: false,
@@ -22,6 +22,10 @@ router.get('/:id',async (req, res) => {
     res.json(output);
 } );
 
+
+router.get('/popular/list',async(req,res)=>{
+    res.json(await Reslist.findAll()); 
+})
 
 //接收經緯度
 router.post('/address', async (req, res)=>{  

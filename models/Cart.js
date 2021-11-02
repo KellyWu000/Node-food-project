@@ -23,9 +23,9 @@ class Cart {
   }
 
   // 讀取 Order_Temp 商品 id 
-  static async getList(Order_Sid) {
-    const sql = `SELECT * FROM ${tableName} WHERE ${pkField}=?`;
-    const [rs] = await db.query(sql,[Order_Sid]);
+  static async getList(Sid) {
+    const sql = `SELECT * FROM ${tableName} WHERE ${DField}=?`;
+    const [rs] = await db.query(sql,[Sid]);
     if (rs && rs.length === 1) {
       return new Cart(rs[0]);
     }
@@ -75,6 +75,7 @@ class Cart {
 
     //參數都必須要有資料
     const obj = {
+      Sid,
       // Member_id,
       // Product_id,
       Order_Amount,
