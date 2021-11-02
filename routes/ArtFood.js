@@ -3,6 +3,12 @@ const db = require('../modules/connect-mysql');
 const router = express.Router();
 const ArtFood = require('../models/ArtFood')
 
+//讀取熱門文章
+// router.get('/FoodContent/popluar',async(req,res)=>{
+//     res.json(await Reslist.findAll()); 
+// })
+
+//讀取全部
 router.get('/',async(req,res)=>{
     res.json(await ArtFood.findAll()); //別代參數因為抓整筆
 })
@@ -20,6 +26,5 @@ router.get('/:id',async (req, res) => {
     }
     res.json(output);
 } );
-
 
 module.exports = router;

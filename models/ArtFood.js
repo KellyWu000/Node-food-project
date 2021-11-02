@@ -8,8 +8,8 @@ class ArtFood {
         this.data = defaultObj;  
     }
 
-
-    static async findAll(pk=0) {
+/* 讀取全部資料 */
+    static async findAll(options = {}) {
         const sql = `SELECT * FROM ${tableName} LIMIT 6`;
                 const [rs] = await db.query(sql);
                 if(rs && rs.length){
@@ -34,9 +34,21 @@ class ArtFood {
 
             // output.products = rs2; 
         } 
-
         return output;
     }
+
+    /*熱門文章 */
+    // static async findAll(options = {}) {
+    //     const sql = `SELECT * FROM ${tableName} WHERE sid IN (4, 5, 6, 7, 8)`;
+    //             const [rs] = await db.query(sql);
+    //             if(rs && rs.length){
+    //                 return rs;
+    //             }
+    //             return null;
+    //         }
+
+
+
 
 
     toJSON() {
