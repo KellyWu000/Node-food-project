@@ -38,14 +38,31 @@ class ArtRecipe {
     }
 
     /*熱門文章 */
-    // static async findAll(options = {}) {
-    //     const sql = `SELECT * FROM ${tableName} WHERE sid IN (4, 5, 6, 7, 8)`;
-    //             const [rs] = await db.query(sql);
-    //             if(rs && rs.length){
-    //                 return rs;
-    //             }
-    //             return null;
-    //         }
+    static async findPopular(options = {}) {
+        const sql = `SELECT * FROM ${tableName} WHERE sid IN (4, 5, 6, 7, 3)`;
+                const [rs] = await db.query(sql);
+                if(rs && rs.length){
+                    return rs;
+                }
+                return null;
+            }
+
+
+
+    /*相關產品 */
+    async findRelating() {
+        if(this.data && this.data.ar_relatingPro){
+            const rel = JSON.parse(this.data.ar_relatingPro);
+
+            const sql = `SELECT * FROM product_food WHERE sid IN (${rel.join(',')})`;
+            const [rs] = await db.query(sql);
+
+            return rs;
+
+        } else {
+            return null;
+        }
+    }
 
 
 

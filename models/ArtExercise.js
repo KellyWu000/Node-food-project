@@ -38,6 +38,26 @@ static async findOne(pk=0) {
 //             return null;
 //         }
 
+/*給客製化的變瘦 */
+static async findLostWeight (options = {}) {
+    const sql = `SELECT * FROM ${tableName} WHERE sid IN (2, 3)`;
+            const [rs] = await db.query(sql);
+            if(rs && rs.length){
+                return rs;
+            }
+            return null;
+        }
+
+/*給客製化的增肌 */
+static async findMuscle(options = {}) {
+    const sql = `SELECT * FROM ${tableName} WHERE sid IN (4, 7)`;
+            const [rs] = await db.query(sql);
+            if(rs && rs.length){
+                return rs;
+            }
+            return null;
+        }
+
 
 
 

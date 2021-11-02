@@ -3,6 +3,7 @@ const db = require('../modules/connect-mysql');
 const router = express.Router();
 const ArtExercise = require('../models/ArtExercise')
 
+//讀全部
 router.get('/',async(req,res)=>{
     res.json(await ArtExercise.findAll()); //別代參數因為抓整筆
 })
@@ -19,5 +20,15 @@ router.get('/:id',async (req, res) => {
     }
     res.json(output);
 } );
+
+// 給客製化的變瘦 
+router.get('/article/lostweight',async(req,res)=>{
+    res.json(await ArtExercise.findLostWeight()); 
+})
+
+// 給客製化的增肌
+router.get('/article/muscle',async(req,res)=>{
+    res.json(await ArtExercise.findMuscle()); 
+})
 
 module.exports = router;
