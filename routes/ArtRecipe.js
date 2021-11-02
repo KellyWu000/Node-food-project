@@ -31,7 +31,7 @@ router.get('/RecipeContent/popluar',async(req,res)=>{
 })
 
 // 讀取相關產品
-router.get('/:id/relatingPro',async (req, res) => {
+router.get('/relatingPro/:id',async (req, res) => {
     const output = {
         success: false,
         data: null,
