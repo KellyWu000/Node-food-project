@@ -3,10 +3,15 @@ const Product = require('./../models/Product');
 
 const router = express.Router();
 
-// 有設定baseURL是/product, 所以/ =對應到/product
+// 有設定baseURL是/product, 所以/ 會對應到/product
 // 列表
 router.get('/', async(req,res)=>{    
         res.json(await Product.findAll(req.query));
+})
+// 讀取三筆for 客製化功能
+
+router.get('/customize/', async (req, res) => {
+    res.json(await Product.findThree(req.query));
 })
 
 
@@ -22,7 +27,6 @@ router.get('/:id', async (req, res) => {
     }
     res.json(output)
 })
-
 
 
 
