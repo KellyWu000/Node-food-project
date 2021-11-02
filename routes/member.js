@@ -141,7 +141,7 @@ router.post('/edit', async (req, res) => {
     res.json(output);
 });
 // ---------------------商品追蹤清單---------------------------
-//查詢商品清單
+//查詢商品清單商品
 router.get('/favorite-product-get/:memberid', async (req, res) => {
     const sql = `SELECT product.sid,
                         product.name, 
@@ -156,7 +156,7 @@ router.get('/favorite-product-get/:memberid', async (req, res) => {
     res.json(rs);
 });
 
-//移除商品清單
+//移除商品追蹤清單商品
 router.delete('/favorite-product-delete/:productid', async (req, res) => {
     const output = {
         success: false,
@@ -168,6 +168,32 @@ router.delete('/favorite-product-delete/:productid', async (req, res) => {
     // 處理刪除資料時可能的錯誤
     try {
         [result] = await db.query(sql, [req.params.productid]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
+});
+
+//新增商品追蹤清單商品
+router.post('/favorite-product-insert', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = "INSERT INTO `member_fav_product`" +
+        "(`member_id`,`product_id`,`create_at`)" +
+        " VALUES (?, ?, NOW())";
+    let result;
+
+    // 處理新增資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [
+            req.body.memberid,
+            req.body.productid
+        ]);
         if (result.affectedRows === 1) {
             output.success = true;
         }
