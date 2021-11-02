@@ -15,14 +15,19 @@ const corsOptions = {
         cb(null, true);
     }
 };
+    
+    app.use( cors(corsOptions) );
+  
+    
 
-app.use(cors(corsOptions));
+    
+
+// app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/', express.static(__dirname + '/public'));
 //商城路由
 app.use('/product', require('./routes/product'));
-
 app.use('/reslist', require('./routes/reslist'));
 app.use('/member', require('./routes/member'));
 app.use('/cart', require('./routes/cart'));

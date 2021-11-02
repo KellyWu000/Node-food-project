@@ -140,6 +140,193 @@ router.post('/edit', async (req, res) => {
 
     res.json(output);
 });
+// ---------------------商品追蹤清單---------------------------
+//查詢商品清單商品
+router.get('/favorite-product-get/:memberid', async (req, res) => {
+    const sql = `SELECT product.sid,
+                        product.name, 
+                        product.price, 
+                        product.detail_img 
+                   FROM member_fav_product member
+                   JOIN product_food product on member.product_id = product.sid
+                  WHERE member.member_id = ?  
+               ORDER BY member.create_at DESC`;
+    let [rs] = await db.query(sql, [req.params.memberid]);
+
+    res.json(rs);
+});
+
+//移除商品追蹤清單商品
+router.delete('/favorite-product-delete/:productid', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = `DELETE FROM member_fav_product WHERE product_id = ?`;
+    let result;
+
+    // 處理刪除資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [req.params.productid]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
+});
+
+//新增商品追蹤清單商品
+router.post('/favorite-product-insert', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = "INSERT INTO `member_fav_product`" +
+        "(`member_id`,`product_id`,`create_at`)" +
+        " VALUES (?, ?, NOW())";
+    let result;
+
+    // 處理新增資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [
+            req.body.memberid,
+            req.body.productid
+        ]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
+});
+// ---------------------文章收藏清單---------------------------
+//查詢文章收藏清單文章
+router.get('/favorite-article-get/:memberid', async (req, res) => {
+    const sql = `SELECT article.sid,
+                        article.ar_title,
+                        article.ar_date,
+                        article.ar_pic
+                   FROM member_fav_article member
+                   JOIN ArtFood article on member.article_id = article.sid
+                  WHERE member.member_id = ?  
+               ORDER BY member.create_at DESC`;
+    let [rs] = await db.query(sql, [req.params.memberid]);
+
+    res.json(rs);
+});
+
+//移除文章收藏清單文章
+router.delete('/favorite-article-delete/:articleid', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = `DELETE FROM member_fav_article WHERE article_id = ?`;
+    let result;
+
+    // 處理刪除資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [req.params.articleid]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
+});
+
+//新增文章收藏清單文章
+router.post('/favorite-article-insert', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = "INSERT INTO `member_fav_article`" +
+        "(`member_id`,`article_id`,`create_at`)" +
+        " VALUES (?, ?, NOW())";
+    let result;
+
+    // 處理新增資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [
+            req.body.memberid,
+            req.body.articleid
+        ]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
+});
+
+// ---------------------餐廳追蹤清單---------------------------
+//查詢餐廳清單商品
+router.get('/favorite-restaurant-get/:memberid', async (req, res) => {
+    const sql = `SELECT restaurant.res_id,
+                        restaurant.res_name,
+                        restaurant.res_aveprice,
+                        restaurant.res_img
+                   FROM member_fav_restaurant member
+                   JOIN restaurant restaurant on member.restaurant_id = restaurant.res_id
+                  WHERE member.member_id = ?  
+               ORDER BY member.create_at DESC`;
+    let [rs] = await db.query(sql, [req.params.memberid]);
+
+    res.json(rs);
+});
+
+//移除餐廳追蹤清單商品
+router.delete('/favorite-restaurant-delete/:restaurantid', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = `DELETE FROM member_fav_restaurant WHERE restaurant_id = ?`;
+    let result;
+
+    // 處理刪除資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [req.params.restaurantid]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
+});
+
+//新增餐廳追蹤清單商品
+router.post('/favorite-restaurant-insert', async (req, res) => {
+    const output = {
+        success: false,
+        error: ''
+    };
+    const sql = "INSERT INTO `member_fav_restaurant`" +
+        "(`member_id`,`restaurant_id`,`create_at`)" +
+        " VALUES (?, ?, NOW())";
+    let result;
+
+    // 處理新增資料時可能的錯誤
+    try {
+        [result] = await db.query(sql, [
+            req.body.memberid,
+            req.body.restaurantid
+        ]);
+        if (result.affectedRows === 1) {
+            output.success = true;
+        }
+    } catch (ex) {
+        output.error = ex.toString();
+    }
+    res.json(output);
+});
 
 //把資料加密成token丟給用戶端
 router.post('/login-jwt', async (req, res) => {
