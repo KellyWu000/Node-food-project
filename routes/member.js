@@ -25,10 +25,13 @@ router.post('/login', async (req, res) => {
 
     const correct = await bcrypt.compare(req.body.password, rs[0].password);
     if (correct) {
-        const { id, email } = rs[0];
+        const data = {
+            memberid: rs[0].sid,
+            email: rs[0].email
+        };
 
         output.success = true;
-        output.token = await jwt.sign({ id, email }, process.env.JWT_SECRET);
+        output.token = await jwt.sign(data, process.env.JWT_SECRET);
         output.id = rs[0].sid;
     } else {
         output.success = false;
@@ -99,17 +102,28 @@ router.post('/signup', async (req, res) => {
 });
 
 //讀取會員資料
-router.get('/memberprofile/:sid', async (req, res) => {
+router.get('/memberprofile', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
     const sql = `SELECT * FROM members WHERE sid = ?`;
-    let [rs] = await db.query(sql, [req.params.sid]);
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
     rs[0].birthday = moment(rs[0].birthday).format('YYYY-MM-DD');
 
-    if (rs.length > 0) {
-        res.json(rs);  //若有查到資料將查到的資料傳回前端
-    } else {
-        res.redirect('/login'); //如果沒有那筆資料就轉到登入頁
-    }
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
 });
 
 //修改資料
@@ -140,9 +154,52 @@ router.post('/edit', async (req, res) => {
 
     res.json(output);
 });
+
+// ---------------------會員點數---------------------------
+//查詢會員點數
+router.get('/memberpoint', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.success = false;
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
+    const sql = `SELECT * FROM member_point WHERE member_sid = ?`;
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
+
+    rs.forEach((value) => {
+        value.create_at = moment(value.create_at).format('YYYY-MM-DD');
+    })
+
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
+});
+
 // ---------------------商品追蹤清單---------------------------
 //查詢商品清單商品
-router.get('/favorite-product-get/:memberid', async (req, res) => {
+router.get('/favorite-product-get', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.success = false;
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
     const sql = `SELECT product.sid,
                         product.name, 
                         product.price, 
@@ -151,9 +208,12 @@ router.get('/favorite-product-get/:memberid', async (req, res) => {
                    JOIN product_food product on member.product_id = product.sid
                   WHERE member.member_id = ?  
                ORDER BY member.create_at DESC`;
-    let [rs] = await db.query(sql, [req.params.memberid]);
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
-    res.json(rs);
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
 });
 
 //移除商品追蹤清單商品
@@ -181,8 +241,15 @@ router.delete('/favorite-product-delete/:productid', async (req, res) => {
 router.post('/favorite-product-insert', async (req, res) => {
     const output = {
         success: false,
-        error: ''
-    };
+        error: '',
+        data: []
+    }
+
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
     const sql = "INSERT INTO `member_fav_product`" +
         "(`member_id`,`product_id`,`create_at`)" +
         " VALUES (?, ?, NOW())";
@@ -191,7 +258,7 @@ router.post('/favorite-product-insert', async (req, res) => {
     // 處理新增資料時可能的錯誤
     try {
         [result] = await db.query(sql, [
-            req.body.memberid,
+            req.myAuth.memberid,
             req.body.productid
         ]);
         if (result.affectedRows === 1) {
@@ -204,7 +271,20 @@ router.post('/favorite-product-insert', async (req, res) => {
 });
 // ---------------------文章收藏清單---------------------------
 //查詢文章收藏清單文章
-router.get('/favorite-article-get/:memberid', async (req, res) => {
+router.get('/favorite-article-get', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.success = false;
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
     const sql = `SELECT article.sid,
                         article.ar_title,
                         article.ar_date,
@@ -213,9 +293,12 @@ router.get('/favorite-article-get/:memberid', async (req, res) => {
                    JOIN ArtFood article on member.article_id = article.sid
                   WHERE member.member_id = ?  
                ORDER BY member.create_at DESC`;
-    let [rs] = await db.query(sql, [req.params.memberid]);
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
-    res.json(rs);
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
 });
 
 //移除文章收藏清單文章
@@ -243,8 +326,15 @@ router.delete('/favorite-article-delete/:articleid', async (req, res) => {
 router.post('/favorite-article-insert', async (req, res) => {
     const output = {
         success: false,
-        error: ''
-    };
+        error: '',
+        data: []
+    }
+
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
     const sql = "INSERT INTO `member_fav_article`" +
         "(`member_id`,`article_id`,`create_at`)" +
         " VALUES (?, ?, NOW())";
@@ -253,7 +343,7 @@ router.post('/favorite-article-insert', async (req, res) => {
     // 處理新增資料時可能的錯誤
     try {
         [result] = await db.query(sql, [
-            req.body.memberid,
+            req.myAuth.memberid,
             req.body.articleid
         ]);
         if (result.affectedRows === 1) {
@@ -267,7 +357,20 @@ router.post('/favorite-article-insert', async (req, res) => {
 
 // ---------------------餐廳追蹤清單---------------------------
 //查詢餐廳清單商品
-router.get('/favorite-restaurant-get/:memberid', async (req, res) => {
+router.get('/favorite-restaurant-get', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.success = false;
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
     const sql = `SELECT restaurant.res_id,
                         restaurant.res_name,
                         restaurant.res_aveprice,
@@ -276,9 +379,12 @@ router.get('/favorite-restaurant-get/:memberid', async (req, res) => {
                    JOIN restaurant restaurant on member.restaurant_id = restaurant.res_id
                   WHERE member.member_id = ?  
                ORDER BY member.create_at DESC`;
-    let [rs] = await db.query(sql, [req.params.memberid]);
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
-    res.json(rs);
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
 });
 
 //移除餐廳追蹤清單商品
@@ -306,8 +412,15 @@ router.delete('/favorite-restaurant-delete/:restaurantid', async (req, res) => {
 router.post('/favorite-restaurant-insert', async (req, res) => {
     const output = {
         success: false,
-        error: ''
-    };
+        error: '',
+        data: []
+    }
+
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
     const sql = "INSERT INTO `member_fav_restaurant`" +
         "(`member_id`,`restaurant_id`,`create_at`)" +
         " VALUES (?, ?, NOW())";
@@ -316,7 +429,7 @@ router.post('/favorite-restaurant-insert', async (req, res) => {
     // 處理新增資料時可能的錯誤
     try {
         [result] = await db.query(sql, [
-            req.body.memberid,
+            req.myAuth.memberid,
             req.body.restaurantid
         ]);
         if (result.affectedRows === 1) {
