@@ -20,7 +20,7 @@ class Cart {
     static async getFullList() {
     // const sql =  `SELECT ot.*,od.* FROM ${tableName} ot LEFT JOIN order_detail od ON ot.Order_Sid=od.Order_sid;
     // `;
-    const sql=`SELECT ot.Sid,ot.Order_Sid,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id FROM ${tableName} ot LEFT JOIN product_food pf ON ot.Product_id=pf.product_id`;
+    const sql=`SELECT ot.Sid,ot.Order_Sid,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id,pf.product_img FROM ${tableName} ot LEFT JOIN product_food pf ON ot.Product_id=pf.product_id`;
     const [rs] = await db.query(sql);
     return rs;
   }
