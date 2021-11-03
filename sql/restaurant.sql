@@ -3,19 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2021-10-28 10:38:23
+-- 產生時間： 2021-11-02 11:57:19
 -- 伺服器版本： 10.4.20-MariaDB
 -- PHP 版本： 7.4.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- 資料庫: `d-food`
@@ -37,8 +31,8 @@ CREATE TABLE `restaurant` (
   `res_address` varchar(255) NOT NULL,
   `res_aveprice` int(11) NOT NULL,
   `res_rate` float NOT NULL,
-  `res_lng` double NOT NULL,
   `res_lat` double NOT NULL,
+  `res_lng` double NOT NULL,
   `res_img` varchar(255) DEFAULT NULL,
   `res_introduce_img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -47,9 +41,9 @@ CREATE TABLE `restaurant` (
 -- 傾印資料表的資料 `restaurant`
 --
 
-INSERT INTO `restaurant` (`res_id`, `res_name`, `res_introduce`, `res_tel`, `res_starttime`, `res_endtime`, `res_address`, `res_aveprice`, `res_rate`, `res_lng`, `res_lat`, `res_img`, `res_introduce_img`) VALUES
+INSERT INTO `restaurant` (`res_id`, `res_name`, `res_introduce`, `res_tel`, `res_starttime`, `res_endtime`, `res_address`, `res_aveprice`, `res_rate`, `res_lat`, `res_lng`, `res_img`, `res_introduce_img`) VALUES
 (1, '生活倉廚', '生活倉廚總是站在每位食用者的立場來料理每一個食材，現點現做，手工修清所有嚴選原肉品。', '02-2732-8101', '10:30', '19:30', '臺北市大安區大安路一段51巷17號1樓', 300, 4.9, 25.043384586925278, 121.54695832619886, 'rp001.jpeg', 'res.png'),
-(2, 'Body Fit 健康盒 ', '        \n以好油、少鹽、多風味的烹調手法，用最天然的當季食材，用少量的香料和食材本身的味道，取代味精、鹽巴。', '02-2737-1212', '11:00', '22:00', '台北市信義區嘉興街129號1F', 200, 4.8, 25.028964640038968, 121.5575422820192, 'rp007.jpeg', 'rp007.jpeg'),
+(2, 'Body Fit 健康盒 ', '        \r\n用最天然的當季食材，用少量的香料和食材本身的味道，取代味精、鹽巴。', '02-2737-1212', '11:00', '22:00', '台北市信義區嘉興街129號1F', 200, 4.8, 25.028964640038968, 121.5575422820192, 'rp007.jpeg', 'rp007.jpeg'),
 (3, '舒食季', '嚴選上等食材，全肉品低溫殺菌烹調，新鮮又健康。', '0913103633', '11:30', '19:30', '台北市大安區泰順街60巷29號', 170, 4.7, 25.022767276952187, 121.52937966852673, 'rp013.jpeg', 'rp013.jpeg'),
 (4, '小飯桌健康餐盒', '感受創新主打獨特健康料理，頂級食材選用，餐盒的口味獨一無二。', '02-2571-2779', '10:30', '22:00', '台北市大安區復興南路一段152號', 150, 4.7, 25.042451327208024, 121.54353133969119, 'rp019.jpeg', 'rp019.jpeg'),
 (5, 'Mini Times 小食光', '	\r\n主打少油鹽低熱量、每日新鮮製作，挑選當季在地新鮮蔬菜。', '0911-218-310', '11:30', '20:00', '台北市大安區泰順街60巷29號E室', 150, 4.7, 25.022757845941854, 121.52936955503446, 'rp020.jpeg', 'rp020.jpeg'),
@@ -66,7 +60,7 @@ INSERT INTO `restaurant` (`res_id`, `res_name`, `res_introduce`, `res_tel`, `res
 (16, '營養工事 ATT4FUN', '營養師掛保證的健康便當，色彩超繽紛、配菜超豐富！ 店內肉類全使用舒肥！口感超軟嫩 每一口都好好吃！', '02-8780-8111', '11:00', '22:00', '台北市信義區松壽路12號', 130, 4.6, 25.036150082193203, 121.56618104545862, 'rp038.jpeg', 'rp038.jpeg'),
 (17, 'Musée Kitchen & Bar', '嚴選上等食材，全肉品低溫殺菌烹調，新鮮又健康。', '02-2345-0100', '12:00', '21:00', '台北市信義區莊敬路178巷15號', 180, 4.7, 25.03126358599944, 121.56056553969103, 'rp001.jpeg', 'rp001.jpeg'),
 (18, 'GET POWER 給力盒子 ', '致力於推廣健康的飲食文化，以高纖、低脂、低 GI 和高蛋白的準則下，推出一個個健康餐點，除了專業餐飲顧問設計，還有營養師共同把關，並不斷研發創新口味', '02-2709-2222', '10:30', '19:50', '台北市大安區和平東路二段311巷6號', 160, 4.9, 25.025137643678878, 121.54496708201916, 'rp007.jpeg', 'rp007.jpeg'),
-(19, '少點鹽健康餐盒專賣', '感受創新主打獨特健康料理，頂級食材選用，餐盒的口味獨一無二。', '02-2756-8006', '10:00', '20:00', '台北市信義區永吉路278巷30號', 120, 4.8, 25.044731726014938, 121.57404498201952, 'rp013.jpeg', 'rp013.jpeg'),
+(19, '少點鹽健康餐盒', '感受創新主打獨特健康料理，頂級食材選用，餐盒的口味獨一無二。', '02-2756-8006', '10:00', '20:00', '台北市信義區永吉路278巷30號', 120, 4.8, 25.044731726014938, 121.57404498201952, 'rp013.jpeg', 'rp013.jpeg'),
 (20, 'Johnny Bro 健康廚房 ', '致力於推廣健康的飲食文化，以高纖、低脂、低 GI 和高蛋白的準則下，推出一個個健康餐點，除了專業餐飲顧問設計，還有營養師共同把關，並不斷研發創新口味', '02-8786-0859', '11:00', '20:00', '台北市信義區忠孝東路五段448號', 140, 4.8, 25.04094543261919, 121.5762074550348, 'rp019.jpeg', 'rp019.jpeg'),
 (21, 'D卡食驗室-輕食健康餐', '致力於推廣健康的飲食文化，以高纖、低脂、低 GI 和高蛋白的準則下，推出一個個健康餐點，除了專業餐飲顧問設計，還有營養師共同把關，並不斷研發創新口味', '0976-019-967', '11:00', '19:30', '台北市信義區松山路531號', 130, 4.7, 25.038303740291152, 121.57825929736308, 'rp020.jpeg', 'rp020.jpeg'),
 (22, 'Peeta TakeTake ', '嚴選良好的在地小農食材再透過最天然的烹調手法，去呈現出食物最原始的風味，而且像是豬肉也都是選用台灣溫體豬肉，所有餐盒都是有經過無數次的測試和營養師的把關，讓客人吃得安心、吃得健康', '02-2749-5929', '11:00', '19:30', '台北市信義區永吉路64號', 170, 4.9, 25.04563838437555, 121.56979991270677, 'rp026.jpeg', 'rp026.jpeg'),
@@ -97,7 +91,3 @@ ALTER TABLE `restaurant`
 ALTER TABLE `restaurant`
   MODIFY `res_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
