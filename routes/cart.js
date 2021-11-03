@@ -160,6 +160,30 @@ router.post("/ConfirmList", async (req, res) => {
   ))
 });
 
+// 新增 Fav_Product
+router.post("/FavProduct", async (req, res) => {
+   
+  const output={
+    success:'false',
+    error:''
+  }
+  
+  res.json(await Cart.FavProduct(
+    req.body.Order_sid,
+    req.body.member_id,
+    req.body.product_id,
+  ))
+});
+
+// 刪除 Fav_Product
+router.delete("/FavProduct/:id", async (req, res) => {
+   
+
+  res.json(await Cart.FavProductdel(
+    req.params.id
+  ))
+});
+
 
 // 抓取 7-11 資料
 router.post('/store', async (req, res) => {

@@ -271,6 +271,41 @@ static async getPlist() {
   return rs;
 }
 
+// 新增單筆 Fav_Product
+static async FavProduct(sid,member_id,product_id) {
+
+  const output = {
+    success: false,
+    error: "",
+  };
+ 
+//參數都必須要有資料
+  const obj = {
+    sid,
+    member_id,
+    product_id,
+  };
+
+  const sql = `INSERT INTO member_fav_product SET ?`;
+  const [r] = await db.query(sql,[obj]);
+  output.success = !!r.affectedRows ? true : false;
+
+   return output;
+}
+
+// 刪除單筆 Fav_Product
+static async FavProductdel(product_id){
+  const output={
+    success:false,
+    error:'',
+  }
+  const sql = `DELETE FROM member_fav_product WHERE product_id=?`;
+  const [r] = await db.query(sql, [product_id]);
+  output.success = !!r.affectedRows ? true : false;
+
+  return output;
+}
+
 
 }
 
