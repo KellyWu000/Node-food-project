@@ -24,9 +24,17 @@ router.get('/:id',async (req, res) => {
 
 
 router.get('/popular/list',async(req,res)=>{
-    res.json(await Reslist.findAll()); 
+    res.json(await Reslist.findPopular()); 
 })
 
+
+router.get('/introduce/calories',async(req,res)=>{
+    res.json(await Reslist.findCal()); 
+})
+
+router.get('/introduce/protein',async(req,res)=>{
+    res.json(await Reslist.findPro()); 
+})
 //接收經緯度
 router.post('/address', async (req, res)=>{  
     const lat = req.body.latitude;
@@ -43,10 +51,6 @@ router.post('/address', async (req, res)=>{
     res.json(output)
 
 })
-
-//讀取經緯度
-//跑迴圈  sql裡的30個座標  
-//會迴船一個陣列
 
 
 

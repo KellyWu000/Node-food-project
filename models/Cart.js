@@ -25,7 +25,7 @@ class Cart {
     return rs;
   }
 
-  // 讀取 Order_Temp 商品 id 
+  // 讀取 Order_Temp 單一商品 
   static async getList(Sid) {
     const sql = `SELECT * FROM ${tableName} WHERE ${DField}=?`;
     const [rs] = await db.query(sql,[Sid]);
@@ -36,7 +36,7 @@ class Cart {
   }
 
 
-  // 加入購物車
+  // 加入 Order_temp
    static async addtmpList(Sid,Order_Sid,Member_id,Product_id,Order_Amount) {
     const output = {
       success: false,
@@ -69,7 +69,7 @@ class Cart {
    }
 
  
-  // 更新購物車
+  // 更新 Order_temp
   static async updatetmpList(Sid,Order_Amount) {
     const output = {
       success: false,
@@ -91,7 +91,7 @@ class Cart {
     return output;
    }
 
-  // 刪除購物車單一品項
+  // 刪除 Order_temp 單一商品
   static async removetmpList(Sid){
     const output={
       success:false,
@@ -153,7 +153,7 @@ class Cart {
      return output;
   }
 
-// 讀取 Member_Detail 訂購人 
+// 讀取 Member_Detail 訂購人
    static async getListDetail(Member_id) {
     const sql = `SELECT * FROM ${tableMember} WHERE ${MemberField}=?`;
     const [rs] = await db.query(sql,[Member_id]);
@@ -262,6 +262,15 @@ static async modifyPoint(sid,member_sid,change_point,change_type,left_point,chan
 
    return output;
 }
+
+// 讀取所有 product
+static async getPlist() {
+  const sql=`SELECT * FROM product_food`;
+  const [rs] = await db.query(sql);
+  console.log('讀取')
+  return rs;
+}
+
 
 }
 

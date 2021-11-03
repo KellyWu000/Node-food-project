@@ -15,22 +15,10 @@ const router = express.Router();
 //   }
 // });
 
-
-// 讀取 Member_Point
-router.get("/memberpoint", async (req, res) => {
-  res.json(await Cart.getMPList())
-});
-
-
-// 讀取單筆 Order_Temp
-router.get("/:id", async (req, res) => {
-  res.json(await Cart.getList(req.params.id))
-});
-
-
-// 讀取所有 Order_Temp
-router.get("/", async (req, res) => {
-  res.json(await Cart.getFullList())
+// 讀取 Product
+router.get("/getProduct", async (req, res) => {
+  // console.log('讀取第一層')
+  res.json(await Cart.getPlist())
 });
 
 // 新增 Member Point
@@ -51,6 +39,22 @@ router.post("/modifyPoint", async (req, res) => {
    ))
 });
 
+// 讀取 Member Point
+router.get("/memberpoint", async (req, res) => {
+  res.json(await Cart.getMPList())
+});
+
+
+// 讀取單筆 Order_Temp
+router.get("/:id", async (req, res) => {
+  res.json(await Cart.getList(req.params.id))
+});
+
+
+// 讀取所有 Order_Temp
+router.get("/", async (req, res) => {
+  res.json(await Cart.getFullList())
+});
 
 
 // 新增 Order_Temp
@@ -96,8 +100,6 @@ router.delete("/", async (req, res) => {
 
 });
 
-
-
 // 讀取單筆 Member_Detail
 router.get("/addList/:id", async (req, res) => {
   res.json(await Cart.getListDetail(req.params.id))
@@ -124,24 +126,8 @@ router.post("/addList", async (req, res) => {
       req.body.Order_Remark,))
   });
 
-  
-// 新增 Order_List
-router.post("/ConfirmList", async (req, res) => {
-   
-    const output={
-      success:'false',
-      error:''
-    }
-    
-    res.json(await Cart.ConfirmList(
-      req.body.Order_Sid,
-      req.body.Member_id,
-      req.body.Total_Price,
-      req.body.Order_Status,
-    ))
-});
 
-// 新增 Member_Detail
+// 新增 Order_Detail
 router.post("/addDetail", async (req, res) => {  
   const output={
     success:'false',
@@ -158,8 +144,23 @@ router.post("/addDetail", async (req, res) => {
    ))
 });
 
-
+// 新增 Order_List
+router.post("/ConfirmList", async (req, res) => {
+   
+  const output={
+    success:'false',
+    error:''
+  }
   
+  res.json(await Cart.ConfirmList(
+    req.body.Order_Sid,
+    req.body.Member_id,
+    req.body.Total_Price,
+    req.body.Order_Status,
+  ))
+});
+
+
 // 抓取 7-11 資料
 router.post('/store', async (req, res) => {
 
