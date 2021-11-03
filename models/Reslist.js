@@ -97,7 +97,7 @@ class Reslist {
         return output;
     }
 
-    static async findAll(options = {}) {
+    static async findPopular(options = {}) {
       
         const sql = `SELECT * FROM restaurant WHERE res_id IN (1,2,19)`;
         const [rs] = await db.query(sql);
@@ -106,6 +106,25 @@ class Reslist {
         }
         return null;
     }
+
+    static async findCal(options={}){
+        const sql=`SELECT * FROM res_products ORDER BY res_products.calories ASC limit 2`;
+        const [rs] = await db.query(sql);
+        if(rs&& rs.length){
+            return rs;
+        }
+        return null;
+    }
+    static async findPro(options={}){
+        const sql=`SELECT * FROM res_products ORDER BY res_products.protein DESC limit 2`;
+        const [rs] = await db.query(sql);
+        if(rs&& rs.length){
+            return rs;
+        }
+        return null;
+    }
+
+   
 
 
     static async findRangeByDistance(lat ,lng , distance) {
