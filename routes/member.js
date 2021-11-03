@@ -155,6 +155,35 @@ router.post('/edit', async (req, res) => {
     res.json(output);
 });
 
+// ---------------------歷史訂單---------------------------
+//查詢會員歷史訂單
+router.get('/memberorder', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.success = false;
+        output.error = '沒有token或者token不合法';
+        res.json(output);
+    }
+
+    const sql = `SELECT * FROM order_list WHERE Member_id = ?`;
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
+
+    // rs.forEach((value) => {
+    //     value.create_at = moment(value.create_at).format('YYYY-MM-DD');
+    // })
+
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
+});
+
 // ---------------------會員點數---------------------------
 //查詢會員點數
 router.get('/memberpoint', async (req, res) => {
@@ -171,7 +200,8 @@ router.get('/memberpoint', async (req, res) => {
         res.json(output);
     }
 
-    const sql = `SELECT * FROM member_point WHERE member_sid = ?`;
+    const sql = `SELECT * FROM member_point WHERE member_sid = ?
+                ORDER BY create_at DESC`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
     rs.forEach((value) => {

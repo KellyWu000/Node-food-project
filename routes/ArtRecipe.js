@@ -41,7 +41,7 @@ router.get('/relatingPro/:id',async (req, res) => {
     output.pop = await af.findRelating();
 
     console.log(output.data)
-    if(output.data){
+    if(output.pop){
         output.success = true;
     }
     res.json(output);

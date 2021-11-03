@@ -18,7 +18,7 @@ class ArtRecipe {
                 return null;
             }
 
-    /* 讀取單筆資料 */
+/* 讀取單筆資料 */
     static async findOne(pk=0) {
         // const sql = `SELECT * FROM ${tableName} WHERE ${pkField}=?`;
         // const output = {};
@@ -37,7 +37,7 @@ class ArtRecipe {
         return output;
     }
 
-    /*熱門文章 */
+/*熱門文章 */
     static async findPopular(options = {}) {
         const sql = `SELECT * FROM ${tableName} WHERE sid IN (4, 5, 6, 7, 3)`;
                 const [rs] = await db.query(sql);
@@ -49,7 +49,7 @@ class ArtRecipe {
 
 
 
-    /*相關產品 */
+/*相關產品 */
     async findRelating() {
         if(this.data && this.data.ar_relatingPro){
             const rel = JSON.parse(this.data.ar_relatingPro);
@@ -63,8 +63,6 @@ class ArtRecipe {
             return null;
         }
     }
-
-
 
 
 
