@@ -21,6 +21,7 @@ router.post('/login', async (req, res) => {
     if (!rs.length) {
         //帳號錯誤
         output.success = false;
+        return res.json(output);
     }
 
     const correct = await bcrypt.compare(req.body.password, rs[0].password);
@@ -37,6 +38,44 @@ router.post('/login', async (req, res) => {
         output.success = false;
     }
 
+    res.json(output);
+});
+
+//---------------------------更改密碼---------------------------
+router.post('/memberchangepassword', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.success = false;
+        output.error = '請先登入';
+        return res.json(output);
+    }
+
+    if (req.body.newpassword != req.body.checknewpassword) {
+        output.success = false;
+        output.error = '新密碼不一致';
+        return res.json(output);
+    }
+
+    const [rs] = await db.query("SELECT * FROM members WHERE `sid`=?", [req.myAuth.memberid]);
+
+    const correct = await bcrypt.compare(req.body.oldpassword, rs[0].password);
+
+    if (correct) {
+        const [result] = await db.query('UPDATE members SET password = ? WHERE sid = ?', [
+            await bcrypt.hash(req.body.newpassword, 8),
+            req.myAuth.memberid
+        ]);
+        if (result.affectedRows == 1) {
+            output.success = true;
+        }
+    } else {
+        output.success = false;
+    }
     res.json(output);
 });
 
@@ -111,8 +150,8 @@ router.get('/memberprofile', async (req, res) => {
 
     //驗證token
     if (!req.myAuth || !req.myAuth.memberid) {
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = `SELECT * FROM members WHERE sid = ?`;
@@ -167,16 +206,16 @@ router.get('/memberorder', async (req, res) => {
     //驗證token
     if (!req.myAuth || !req.myAuth.memberid) {
         output.success = false;
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = `SELECT * FROM order_list WHERE Member_id = ?`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
-    // rs.forEach((value) => {
-    //     value.create_at = moment(value.create_at).format('YYYY-MM-DD');
-    // })
+    rs.forEach((value) => {
+        value.Created_At = moment(value.Created_At).format('YYYY-MM-DD');
+    })
 
     output.success = true;
     output.data = rs;
@@ -196,8 +235,8 @@ router.get('/memberpoint', async (req, res) => {
     //驗證token
     if (!req.myAuth || !req.myAuth.memberid) {
         output.success = false;
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = `SELECT * FROM member_point WHERE member_sid = ?
@@ -226,8 +265,8 @@ router.get('/favorite-product-get', async (req, res) => {
     //驗證token
     if (!req.myAuth || !req.myAuth.memberid) {
         output.success = false;
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = `SELECT product.sid,
@@ -276,8 +315,8 @@ router.post('/favorite-product-insert', async (req, res) => {
     }
 
     if (!req.myAuth || !req.myAuth.memberid) {
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = "INSERT INTO `member_fav_product`" +
@@ -311,8 +350,8 @@ router.get('/favorite-article-get', async (req, res) => {
     //驗證token
     if (!req.myAuth || !req.myAuth.memberid) {
         output.success = false;
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = `SELECT article.sid,
@@ -361,8 +400,8 @@ router.post('/favorite-article-insert', async (req, res) => {
     }
 
     if (!req.myAuth || !req.myAuth.memberid) {
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = "INSERT INTO `member_fav_article`" +
@@ -397,8 +436,8 @@ router.get('/favorite-restaurant-get', async (req, res) => {
     //驗證token
     if (!req.myAuth || !req.myAuth.memberid) {
         output.success = false;
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = `SELECT restaurant.res_id,
@@ -447,8 +486,8 @@ router.post('/favorite-restaurant-insert', async (req, res) => {
     }
 
     if (!req.myAuth || !req.myAuth.memberid) {
-        output.error = '沒有token或者token不合法';
-        res.json(output);
+        output.error = '請先登入';
+        return res.json(output);
     }
 
     const sql = "INSERT INTO `member_fav_restaurant`" +
