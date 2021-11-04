@@ -20,7 +20,7 @@ class Cart {
     static async getFullList() {
     // const sql =  `SELECT ot.*,od.* FROM ${tableName} ot LEFT JOIN order_detail od ON ot.Order_Sid=od.Order_sid;
     // `;
-    const sql=`SELECT ot.Sid,ot.Order_Sid,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id FROM ${tableName} ot LEFT JOIN product_food pf ON ot.Product_id=pf.product_id`;
+    const sql=`SELECT ot.Sid,ot.Order_Sid,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id,pf.product_img FROM ${tableName} ot LEFT JOIN product_food pf ON ot.Product_id=pf.product_id`;
     const [rs] = await db.query(sql);
     return rs;
   }
@@ -269,6 +269,41 @@ static async getPlist() {
   const [rs] = await db.query(sql);
   console.log('讀取')
   return rs;
+}
+
+// 新增單筆 Fav_Product
+static async FavProduct(sid,member_id,product_id) {
+
+  const output = {
+    success: false,
+    error: "",
+  };
+ 
+//參數都必須要有資料
+  const obj = {
+    sid,
+    member_id,
+    product_id,
+  };
+
+  const sql = `INSERT INTO member_fav_product SET ?`;
+  const [r] = await db.query(sql,[obj]);
+  output.success = !!r.affectedRows ? true : false;
+
+   return output;
+}
+
+// 刪除單筆 Fav_Product
+static async FavProductdel(product_id){
+  const output={
+    success:false,
+    error:'',
+  }
+  const sql = `DELETE FROM member_fav_product WHERE product_id=?`;
+  const [r] = await db.query(sql, [product_id]);
+  output.success = !!r.affectedRows ? true : false;
+
+  return output;
 }
 
 
