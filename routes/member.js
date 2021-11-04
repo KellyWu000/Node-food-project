@@ -213,9 +213,9 @@ router.get('/memberorder', async (req, res) => {
     const sql = `SELECT * FROM order_list WHERE Member_id = ?`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
-    // rs.forEach((value) => {
-    //     value.create_at = moment(value.create_at).format('YYYY-MM-DD');
-    // })
+    rs.forEach((value) => {
+        value.Created_At = moment(value.Created_At).format('YYYY-MM-DD');
+    })
 
     output.success = true;
     output.data = rs;
