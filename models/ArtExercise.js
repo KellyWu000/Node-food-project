@@ -7,6 +7,7 @@ class ArtExercise {
     constructor(defaultObj={}) {
         this.data = defaultObj;  
     }
+    
 /* 讀取全部資料 */
 static async findAll(options = {}) {
     const sql = `SELECT * FROM ${tableName} LIMIT 6`;
