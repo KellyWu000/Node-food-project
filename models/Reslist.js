@@ -128,9 +128,9 @@ class Reslist {
 
 
     static async findRangeByDistance(lat ,lng , distance) {
-        const sql = `SELECT *, ( 6371 * acos( cos( radians(?) ) * cos( radians(res_lat)) * cos( radians(res_lng ) - radians(?) ) + sin( radians(?) ) * sin( radians( res_lat ) ) ) ) AS distance FROM restaurant HAVING distance <= ? ORDER BY distance`;
+        const sql = `SELECT r.*, mfr.sid as isLiked, ( 6371 * acos( cos( radians(?) ) * cos( radians(res_lat)) * cos( radians(res_lng ) - radians(?) ) + sin( radians(?) ) * sin( radians( res_lat ) ) ) ) AS distance FROM restaurant r left join member_fav_restaurant mfr on r.res_id = mfr.restaurant_id and mfr.member_id = ? HAVING distance <= ? ORDER BY distance`;
         
-        const [rs] = await db.query(sql, [lat, lng, lat, distance]);
+        const [rs] = await db.query(sql, [lat, lng, lat, '42',distance]);
 
         console.log('##############################')
         console.log(lat);
