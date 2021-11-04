@@ -364,6 +364,10 @@ router.get('/favorite-article-get', async (req, res) => {
                ORDER BY member.create_at DESC`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
+    rs.forEach((value) => {
+        value.ar_date = moment(value.ar_date).format('YYYY-MM-DD');
+    })
+
     output.success = true;
     output.data = rs;
 
