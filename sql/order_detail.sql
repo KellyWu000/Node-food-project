@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2021-11-03 10:51:04
+-- 產生時間： 2021-11-04 09:37:18
 -- 伺服器版本： 10.4.21-MariaDB
 -- PHP 版本： 7.3.31
 
@@ -37,6 +37,13 @@ CREATE TABLE `order_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- 傾印資料表的資料 `order_detail`
+--
+
+INSERT INTO `order_detail` (`Sid`, `Order_sid`, `Product_id`, `Order_Amount`, `Promotion_Amount`, `Order_Total`) VALUES
+(1, 'order20211104151303', 'PT002', 7, 0, 245);
+
+--
 -- 已傾印資料表的索引
 --
 
@@ -54,7 +61,7 @@ ALTER TABLE `order_detail`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order_detail`
 --
 ALTER TABLE `order_detail`
-  MODIFY `Sid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
