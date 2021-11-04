@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2021-11-03 10:50:51
+-- 產生時間： 2021-11-04 09:37:12
 -- 伺服器版本： 10.4.21-MariaDB
 -- PHP 版本： 7.3.31
 
@@ -29,7 +29,6 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `order_temp` (
   `Sid` int(11) NOT NULL,
-  `Order_Sid` varchar(255) NOT NULL COMMENT '訂單編號格式:order+timestamp',
   `Member_id` varchar(255) NOT NULL COMMENT '會員 email',
   `Product_id` varchar(255) NOT NULL COMMENT '商城的商品 id',
   `Order_Amount` int(11) NOT NULL COMMENT '商品訂購數量'
@@ -39,10 +38,8 @@ CREATE TABLE `order_temp` (
 -- 傾印資料表的資料 `order_temp`
 --
 
-INSERT INTO `order_temp` (`Sid`, `Order_Sid`, `Member_id`, `Product_id`, `Order_Amount`) VALUES
-(10, 'order2021103141501', 'st880517', 'PM002', 10),
-(26, 'order2021103141501', 'st880517', 'PM003', 10),
-(29, 'order2021103141501', 'st880517', 'PT003', 23);
+INSERT INTO `order_temp` (`Sid`, `Member_id`, `Product_id`, `Order_Amount`) VALUES
+(1, '5', 'PT001', 2);
 
 --
 -- 已傾印資料表的索引
@@ -62,7 +59,7 @@ ALTER TABLE `order_temp`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order_temp`
 --
 ALTER TABLE `order_temp`
-  MODIFY `Sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `Sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

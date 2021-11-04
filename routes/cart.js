@@ -69,7 +69,6 @@ router.post("/", async (req, res) => {
   
   res.json(await Cart.addtmpList(
     req.body.Sid,
-    req.body.Order_Sid,
     req.body.Member_id,
     req.body.Product_id,
     req.body.Order_Amount))
@@ -79,8 +78,6 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   res.json(await Cart.updatetmpList(
     req.params.id,
-    // req.body.Member_id,
-    // req.body.Product_id,
     req.body.Order_Amount,
     ))
 
@@ -115,6 +112,7 @@ router.post("/addList", async (req, res) => {
     
     res.json(await Cart.addListDetail(
       req.body.Sid,
+      req.body.Order_Sid,
       req.body.Member_id,
       req.body.Order_Name,
       req.body.Order_Phone,
@@ -157,6 +155,7 @@ router.post("/ConfirmList", async (req, res) => {
     req.body.Member_id,
     req.body.Total_Price,
     req.body.Order_Status,
+    req.body.Created_At,
   ))
 });
 
@@ -203,6 +202,19 @@ router.post('/store', async (req, res) => {
     // console.log(params.toString())
     res.send(response.data);
  });
+
+//  // 抓取 7-11 地區
+// router.post('/city', async (req, res) => {
+
+//   const params = new URLSearchParams({
+//     city: req.body.city,
+//   });
+
+//   const city=require('../public/taiwan_districts.json')
+
+//   res.json(city.filter(el=>el.name=== req.body.city))
+
+// });
 
 
 

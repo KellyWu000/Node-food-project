@@ -158,6 +158,7 @@ class Product {
         return JSON.stringify(this.data, null, 4);
     }
 
+    // 細節頁收藏
     static async findMemberFav(productId, memberId) {
         const sql = `SELECT * FROM member_fav_product WHERE product_id = ? AND member_id = ?`;
         const [rs] = await db.query(sql, [productId, memberId]);

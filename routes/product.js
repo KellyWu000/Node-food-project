@@ -20,6 +20,7 @@ router.get('/:id', async (req, res) => {
         success: false,
         data: null,
     }
+    // 判斷收藏
     output.data = await Product.findOne(req.params.id)
     if (output.data) {
         output.success = true;
@@ -37,6 +38,7 @@ router.get('/fav/:mid', async (req, res) => {
         data: null,
     }
 
+    // 讀取會員收藏商品清單資料
     const sql = "SELECT product_id FROM `member_fav_product` WHERE `member_id`=?";
     let rs;
     [rs] = await db.query(sql, [req.params.mid])
