@@ -7,6 +7,7 @@ class ArtExercise {
     constructor(defaultObj={}) {
         this.data = defaultObj;  
     }
+    
 /* 讀取全部資料 */
 static async findAll(options = {}) {
     const sql = `SELECT * FROM ${tableName} LIMIT 6`;
@@ -29,14 +30,25 @@ static async findOne(pk=0) {
 }
 
 /*熱門文章 */
-// static async findAll(options = {}) {
-//     const sql = `SELECT * FROM ${tableName} WHERE sid IN (4, 5, 6, 7, 8)`;
-//             const [rs] = await db.query(sql);
-//             if(rs && rs.length){
-//                 return rs;
-//             }
-//             return null;
-//         }
+static async findPopular(options = {}) {
+    const sql = `SELECT * FROM ${tableName} WHERE sid IN (4, 5, 6, 7, 3)`;
+            const [rs] = await db.query(sql);
+            if(rs && rs.length){
+                return rs;
+            }
+            return null;
+        }
+
+/* 隨機文章 */
+static async findRand(options = {}) {
+    const sql = `SELECT * FROM ${tableName} ORDER BY RAND() LIMIT 3`;
+            const [rs] = await db.query(sql);
+            if(rs && rs.length){
+                return rs;
+            }
+            return null;
+        }
+
 
 /*給客製化的變瘦 */
 static async findLostWeight (options = {}) {

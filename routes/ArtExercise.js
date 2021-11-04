@@ -21,6 +21,16 @@ router.get('/:id',async (req, res) => {
     res.json(output);
 } );
 
+//讀取熱門文章
+router.get('/ExerciseContent/popluar',async(req,res)=>{
+    res.json(await ArtExercise.findPopular()); 
+})
+
+// 讀取隨機文章
+router.get('/ExerciseContent/relatingArt',async(req,res)=>{
+    res.json(await ArtExercise.findRand());
+})
+
 // 給客製化的變瘦 
 router.get('/article/lostweight',async(req,res)=>{
     res.json(await ArtExercise.findLostWeight()); 
