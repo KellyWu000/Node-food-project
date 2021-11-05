@@ -12,9 +12,10 @@ class ArtExercise {
 static async findAll(options = {}) {
     const sql = `SELECT * FROM ${tableName} LIMIT 6`;
             const [rs] = await db.query(sql);
-            if(rs && rs.length){
-                return rs;
-            }
+            return rs;
+            // if(rs && rs.length){
+            //     return rs;
+            // }
             return null;
         }
 
