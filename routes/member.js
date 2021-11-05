@@ -41,7 +41,7 @@ router.post('/login', async (req, res) => {
     res.json(output);
 });
 
-//---------------------------更改密碼---------------------------
+//更改密碼
 router.post('/memberchangepassword', async (req, res) => {
     const output = {
         success: false,
@@ -76,6 +76,30 @@ router.post('/memberchangepassword', async (req, res) => {
     } else {
         output.success = false;
     }
+    res.json(output);
+});
+
+//重設密碼
+router.post('/resetpassword', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+    }
+
+    if (req.body.newpassword != req.body.checknewpassword) {
+        output.success = false;
+        output.error = '新密碼不一致';
+        return res.json(output);
+    }
+
+    const [result] = await db.query('UPDATE members SET password = ? WHERE sid = ?', [
+        await bcrypt.hash(req.body.newpassword, 8),
+        req.body.memberid
+    ]);
+    if (result.affectedRows == 1) {
+        output.success = true;
+    }
+
     res.json(output);
 });
 
@@ -165,6 +189,52 @@ router.get('/memberprofile', async (req, res) => {
     res.json(output);
 });
 
+//讀取會員資料 (忘記密碼)
+router.get('/memberprofile/:email', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: null
+    }
+
+    const sql = `SELECT * FROM members WHERE email = ?`;
+    //get取參數固定為req.params.xxx
+    let [rs] = await db.query(sql, [req.params.email]);
+
+    if (!rs.length) {
+        output.error = '此 Email 尚未註冊';
+        return res.json(output);
+    }
+
+    output.success = true;
+    output.data = rs[0];
+
+    res.json(output);
+});
+
+//讀取會員資料 (點擊密碼重設信件後確認會員資料)
+router.post('/memberprofile', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        memberid: 0
+    }
+
+    const sql = `SELECT * FROM members WHERE email = ? AND password = ?`;
+    //post取參數固定為req.body.xxx
+    let [rs] = await db.query(sql, [req.body.email, req.body.password]);
+
+    if (!rs.length) {
+        output.error = '此為無效連結，請聯繫客服';
+        return res.json(output);
+    }
+
+    output.success = true;
+    output.memberid = rs[0].sid;
+
+    res.json(output);
+});
+
 //修改資料
 router.post('/edit', async (req, res) => {
     const output = {
@@ -194,7 +264,7 @@ router.post('/edit', async (req, res) => {
     res.json(output);
 });
 
-// ---------------------歷史訂單---------------------------
+// ---------------------歷史訂單-------------------------------
 //查詢會員歷史訂單
 router.get('/memberorder', async (req, res) => {
     const output = {
@@ -223,7 +293,7 @@ router.get('/memberorder', async (req, res) => {
     res.json(output);
 });
 
-// ---------------------會員點數---------------------------
+// ---------------------會員點數-------------------------------
 //查詢會員點數
 router.get('/memberpoint', async (req, res) => {
     const output = {
@@ -338,6 +408,7 @@ router.post('/favorite-product-insert', async (req, res) => {
     }
     res.json(output);
 });
+
 // ---------------------文章收藏清單---------------------------
 //查詢文章收藏清單文章
 router.get('/favorite-article-get', async (req, res) => {
@@ -363,10 +434,6 @@ router.get('/favorite-article-get', async (req, res) => {
                   WHERE member.member_id = ?  
                ORDER BY member.create_at DESC`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
-
-    rs.forEach((value) => {
-        value.ar_date = moment(value.ar_date).format('YYYY-MM-DD');
-    })
 
     output.success = true;
     output.data = rs;
@@ -427,7 +494,6 @@ router.post('/favorite-article-insert', async (req, res) => {
     }
     res.json(output);
 });
-
 
 // ---------------------餐廳追蹤清單---------------------------
 //查詢餐廳清單商品
