@@ -7,7 +7,7 @@ const ArtFood = require('../models/ArtFood')
 
 //讀取全部
 router.get('/',async(req,res)=>{
-    res.json(await ArtFood.findAll()); //別代參數因為抓整筆
+    res.json(await ArtFood.findAll(req.query)); //別代參數因為抓整筆
 })
 
 // 讀取單筆
