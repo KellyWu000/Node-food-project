@@ -1,13 +1,11 @@
 const { now } = require("moment");
 const db = require("./../modules/connect-mysql");
-
 const tableName = "order_temp";
 const tableMember="member_detail";
 const tableOrderList="order_list";
 const tableDetailList="order_detail";
 const DField = "Sid";
-let date=new Date()
-console.log('日期',date)
+
 class Cart {
   constructor(defaultObj = {}) {
     this.data = defaultObj;
@@ -124,7 +122,7 @@ class Cart {
 
 
   // 新增 Member_Detail
-  static async addListDetail(Sid,Order_Sid,Member_id,Order_Name,Order_Phone,E_Mail,Order_Address,Invoice_Type,Invoice_Number,Payment_Type,Order_Remark) {
+  static async addListDetail(Sid,Order_Sid,Member_id,Order_Name,Order_Phone,E_Mail,Order_Address,Invoice_Type,Invoice_Number,Payment_Type,Order_Remark,Created_At) {
 
     const output = {
       success: false,
@@ -149,7 +147,8 @@ class Cart {
       Invoice_Type,
       Invoice_Number,
       Payment_Type,
-      Order_Remark
+      Order_Remark,
+      Created_At,
     };
 
     const sql = `INSERT INTO ${tableMember} SET ?`;

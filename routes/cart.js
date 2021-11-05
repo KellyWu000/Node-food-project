@@ -121,7 +121,8 @@ router.post("/addList", async (req, res) => {
       req.body.Invoice_Type,
       req.body.Invoice_Number,
       req.body.Payment_Type,
-      req.body.Order_Remark,))
+      req.body.Order_Remark,
+      req.body.Created_At,))
   });
 
 
@@ -187,12 +188,12 @@ router.delete("/FavProduct/:id", async (req, res) => {
 // 抓取 7-11 資料
 router.post('/store', async (req, res) => {
 
-    
     const params = new URLSearchParams({
       // ...obj,
       commandid: req.body.commandid,
       city: req.body.city,
       town: req.body.town,
+      roadname:req.body.roadname,
     });
   
     const response = await axios.post(
@@ -203,18 +204,7 @@ router.post('/store', async (req, res) => {
     res.send(response.data);
  });
 
-//  // 抓取 7-11 地區
-// router.post('/city', async (req, res) => {
 
-//   const params = new URLSearchParams({
-//     city: req.body.city,
-//   });
-
-//   const city=require('../public/taiwan_districts.json')
-
-//   res.json(city.filter(el=>el.name=== req.body.city))
-
-// });
 
 
 
