@@ -121,7 +121,8 @@ router.post("/addList", async (req, res) => {
       req.body.Invoice_Type,
       req.body.Invoice_Number,
       req.body.Payment_Type,
-      req.body.Order_Remark,))
+      req.body.Order_Remark,
+      req.body.Created_At,))
   });
 
 
