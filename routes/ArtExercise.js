@@ -5,7 +5,7 @@ const ArtExercise = require('../models/ArtExercise')
 
 //讀全部
 router.get('/',async(req,res)=>{
-    res.json(await ArtExercise.findAll()); //別代參數因為抓整筆
+    res.json(await ArtExercise.findAll(req.query)); //別代參數因為抓整筆
 })
 
 // 讀取單筆
@@ -33,12 +33,12 @@ router.get('/ExerciseContent/relatingArt',async(req,res)=>{
 
 // 給客製化的變瘦 
 router.get('/article/lostweight',async(req,res)=>{
-    res.json(await ArtExercise.findLostWeight()); 
+    res.json(await ArtExercise.findLostWeight(req.query)); 
 })
 
 // 給客製化的增肌
 router.get('/article/muscle',async(req,res)=>{
-    res.json(await ArtExercise.findMuscle()); 
+    res.json(await ArtExercise.findMuscle(req.query)); 
 })
 
 module.exports = router;

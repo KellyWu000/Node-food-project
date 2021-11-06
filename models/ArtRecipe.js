@@ -9,14 +9,36 @@ class ArtRecipe {
     }
 
 /* 讀取全部資料 */
-    static async findAll(options = {}) {
-        const sql = `SELECT * FROM ${tableName} LIMIT 6`;
-                const [rs] = await db.query(sql);
-                if(rs && rs.length){
-                    return rs;
-                }
-                return null;
-            }
+static async findAll(options = {}) {
+    let op = {
+        perPage: 6,
+        page: 1,
+        ...options
+    }
+
+    const output = {
+        perPage: op.perPage,
+        page: op.page,
+        totalRows: 0,
+        totalPages: 0,
+        rows: [],
+    }
+
+    const t_sql = `SELECT COUNT(1) totalRows FROM ${tableName} `;
+    const [t_rs] = await db.query(t_sql)
+    const totalRows = t_rs[0].totalRows
+
+    if(totalRows > 0){
+        output.totalRows = totalRows; //設定總比數
+        output.totalPages = Math.ceil(totalRows / op.perPage); // 拿到所有資料
+
+        const sql = `SELECT * FROM ${tableName} LIMIT ${(op.page - 1) * (op.perPage)}, ${op.perPage}`;
+        const [rs] = await db.query(sql);
+        output.rows = rs;
+    }
+
+    return output;
+        }
 
 /* 讀取單筆資料 */
     static async findOne(pk=0) {

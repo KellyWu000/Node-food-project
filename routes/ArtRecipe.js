@@ -8,7 +8,7 @@ const ArtRecipe = require('../models/ArtRecipe')
 
 //讀取全部
 router.get('/',async(req,res)=>{
-    res.json(await ArtRecipe.findAll()); //別代參數因為抓整筆
+    res.json(await ArtRecipe.findAll(req.query)); //別代參數因為抓整筆
 })
 
 
