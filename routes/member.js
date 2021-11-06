@@ -293,6 +293,35 @@ router.get('/memberorder', async (req, res) => {
     res.json(output);
 });
 
+// ---------------------我的評價------------------------------
+//查詢我的評價
+router.get('/memberreview', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        output.success = false;
+        output.error = '請先登入';
+        return res.json(output);
+    }
+
+    const sql = `SELECT * FROM member_review WHERE member_id = ?`;
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
+
+    rs.forEach((value) => {
+        value.create_at = moment(value.create_at).format('YYYY-MM-DD');
+    })
+
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
+});
+
 // ---------------------會員點數-------------------------------
 //查詢會員點數
 router.get('/memberpoint', async (req, res) => {
@@ -434,6 +463,10 @@ router.get('/favorite-article-get', async (req, res) => {
                   WHERE member.member_id = ?  
                ORDER BY member.create_at DESC`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
+
+    rs.forEach((value) => {
+        value.ar_date = moment(value.ar_date).format('YYYY-MM-DD');
+    })
 
     output.success = true;
     output.data = rs;

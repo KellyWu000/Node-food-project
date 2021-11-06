@@ -39,6 +39,7 @@ app.use(async (req, res, next) => {
 app.use('/product', require('./routes/product'));
 app.use('/reslist', require('./routes/reslist'));
 app.use('/member', require('./routes/member'));
+app.use('/game', require('./routes/game'));
 app.use('/cart', require('./routes/cart'));
 app.use('/ArtExercise', require('./routes/ArtExercise'));
 app.use('/ArtFood', require('./routes/ArtFood'));
