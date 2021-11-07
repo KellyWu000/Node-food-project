@@ -33,15 +33,18 @@ CREATE TABLE `order_detail` (
   `Product_id` varchar(255) NOT NULL COMMENT '商城的商品 id',
   `Order_Amount` int(11) NOT NULL COMMENT '商品的訂購數量',
   `Promotion_Amount` int(11) DEFAULT NULL COMMENT '使用的會員點數',
-  `Order_Total` int(11) NOT NULL COMMENT '商品小計'
+  `Order_Total` int(11) NOT NULL COMMENT '商品小計',
+  `Review_Level` int(1) DEFAULT 0 COMMENT '客戶評價等級',
+  `Review_Description` varchar(255) NOT NULL COMMENT '客戶評價內容'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 傾印資料表的資料 `order_detail`
 --
 
-INSERT INTO `order_detail` (`Sid`, `Order_sid`, `Product_id`, `Order_Amount`, `Promotion_Amount`, `Order_Total`) VALUES
-(1, 'order20211104151303', 'PT002', 7, 0, 245);
+INSERT INTO `order_detail` (`Sid`, `Order_sid`, `Product_id`, `Order_Amount`, `Promotion_Amount`, `Order_Total`, `Review_Level`, `Review_Description`) VALUES
+(1, 'order20211104151303', 'PT002', 7, 0, 245, 0, ''),
+(2, 'order20211104151303', 'PM002', 1, 0, 99, 5, '123');
 
 --
 -- 已傾印資料表的索引
