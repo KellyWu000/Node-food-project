@@ -31,7 +31,7 @@ router.get('/:id', async (req, res) => {
     res.json(output)
 })
 
-// 讀取單筆
+
 router.get('/fav/:mid', async (req, res) => {
     const output = {
         success: false,
@@ -54,6 +54,24 @@ router.get('/fav/:mid', async (req, res) => {
         output.data = rs;
     }
     */
+    res.json(output)
+})
+
+//商品評論內容
+router.get('/reviews/:pid', async (req, res) => {
+    const output = {
+        success: false,
+        data: null,
+    }
+    // 讀取商品評論內容
+    const sql = `SELECT * FROM order_detail WHERE product_id = ?`;
+    let rs;
+    [rs] = await db.query(sql, [req.params.pid])
+    if(rs.length){
+        output.data = rs;
+        output.success = true
+    }
+    
     res.json(output)
 })
 module.exports = router
