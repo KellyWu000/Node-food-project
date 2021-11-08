@@ -26,7 +26,7 @@ router.get('/random-artrecipe-get', async (req, res) => {
         data: null
     }
 
-    const sql = `SELECT * FROM artrecipe`;
+    const sql = `SELECT * FROM ArtRecipe`;
     let [rs] = await db.query(sql);
 
     output.success = true;
