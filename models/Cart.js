@@ -5,10 +5,21 @@ const tableMember="member_detail";
 const tableOrderList="order_list";
 const tableDetailList="order_detail";
 const DField = "Sid";
+let date= new Date()
 
 class Cart {
   constructor(defaultObj = {}) {
     this.data = defaultObj;
+  }
+
+ // 讀取 Order_Temp 單一商品 
+  static async getList(Product_id) {
+    const sql = `SELECT * FROM ${tableName} WHERE Product_id=?`;
+    const [rs] = await db.query(sql,[Product_id]);
+    if (rs && rs.length === 1) {
+      return new Cart(rs[0]);
+    }
+    return null;
   }
 
 
@@ -21,25 +32,6 @@ class Cart {
     return rs;
   }
 
-  // 讀取 Order_Temp 單一商品 
-  // static async getList(Sid) {
-  //   const sql = `SELECT * FROM ${tableName} WHERE ${DField}=?`;
-  //   const [rs] = await db.query(sql,[Sid]);
-  //   if (rs && rs.length === 1) {
-  //     return new Cart(rs[0]);
-  //   }
-  //   return null;
-  // }
-
-
-  static async getList(Product_id) {
-    const sql = `SELECT * FROM ${tableName} WHERE Product_id=?`;
-    const [rs] = await db.query(sql,[Product_id]);
-    if (rs && rs.length === 1) {
-      return new Cart(rs[0]);
-    }
-    return null;
-  }
 
 
   // 加入 Order_temp
@@ -206,7 +198,7 @@ class Cart {
   }
 
   // 新增 Order_Detail 
-  static async addDetail(Sid,Order_Sid,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
+  static async addDetail(Sid,Order_Sid,Order_Name,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
     const output = {
       success: false,
       error: "",
@@ -222,6 +214,7 @@ class Cart {
     const obj = {
       Sid,
       Order_Sid,
+      Order_Name,
       Product_id,
       Order_Amount,
       Promotion_Amount,

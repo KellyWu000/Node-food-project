@@ -74,6 +74,8 @@ router.post("/", async (req, res) => {
     req.body.Order_Amount))
   });
 
+  
+
 // 修改 Order_Temp
 router.put("/:id", async (req, res) => {
   res.json(await Cart.updatetmpList(
@@ -136,6 +138,7 @@ router.post("/addDetail", async (req, res) => {
   res.json(await Cart.addDetail(
     req.body.Sid,
     req.body.Order_Sid,
+    req.body.Order_Name,
     req.body.Product_id,
     req.body.Order_Amount,
     req.body.Promotion_Amount,
