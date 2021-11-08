@@ -198,7 +198,7 @@ class Cart {
   }
 
   // 新增 Order_Detail 
-  static async addDetail(Sid,Order_Sid,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
+  static async addDetail(Sid,Order_Sid,Order_Name,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
     const output = {
       success: false,
       error: "",
@@ -214,6 +214,7 @@ class Cart {
     const obj = {
       Sid,
       Order_Sid,
+      Order_Name,
       Product_id,
       Order_Amount,
       Promotion_Amount,
