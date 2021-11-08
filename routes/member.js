@@ -189,6 +189,27 @@ router.get('/memberprofile', async (req, res) => {
     res.json(output);
 });
 
+//讀取會員購物車數量
+router.get('/member-cart-count', async (req, res) => {
+    const output = {
+        success: false,
+        count: 0
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        return res.json(output);
+    }
+
+    const sql = `SELECT * FROM order_temp WHERE Member_id = ?`;
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
+
+    output.success = true;
+    output.count = rs.length == 0 ? 0 : rs.reduce((prev, curr) => { return prev + curr.Order_Amount; }, 0);
+    
+    res.json(output);
+});
+
 //讀取會員資料 (忘記密碼)
 router.get('/memberprofile/:email', async (req, res) => {
     const output = {
@@ -341,7 +362,7 @@ router.post('/review-data-save', async (req, res) => {
         error: '',
     }
 
-    const sql = `UPDATE order_detail SET Review_Level = ?, Review_Description = ? WHERE Order_sid = ? AND Product_id = ?`
+    const sql = `UPDATE order_detail SET Review_Level = ?, Review_Description = ?, Review_Timestamp = NOW() WHERE Order_sid = ? AND Product_id = ?`
 
     let product = req.body;
 
@@ -400,7 +421,8 @@ router.get('/favorite-product-get', async (req, res) => {
     const output = {
         success: false,
         error: '',
-        data: []
+        data: [],
+        memberID: 0
     }
 
     //驗證token
@@ -411,6 +433,7 @@ router.get('/favorite-product-get', async (req, res) => {
     }
 
     const sql = `SELECT product.sid,
+                        product.product_id,
                         product.name, 
                         product.price, 
                         product.detail_img 
@@ -422,6 +445,7 @@ router.get('/favorite-product-get', async (req, res) => {
 
     output.success = true;
     output.data = rs;
+    output.memberID = req.myAuth.memberid;
 
     res.json(output);
 });
