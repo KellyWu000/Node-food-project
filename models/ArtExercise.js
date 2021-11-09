@@ -61,7 +61,7 @@ static async findPopular(options = {}) {
             return null;
         }
 
-/* 隨機文章 */
+/* 細節頁下方的隨機文章 */
 static async findRand(options = {}) {
     const sql = `SELECT * FROM ${tableName} ORDER BY RAND() LIMIT 3`;
             const [rs] = await db.query(sql);
