@@ -45,7 +45,7 @@ class Reslist {
 
     static async findPopular(options = {}) {
       
-        const sql = `SELECT * FROM restaurant WHERE res_id IN (1,2,16,24,10,8,19,18)`;
+        const sql = `SELECT * FROM restaurant ORDER BY res_rate DESC LIMIT 8`;
         const [rs] = await db.query(sql);
         if (rs && rs.length) {
             return rs;
@@ -80,13 +80,7 @@ class Reslist {
         
         const [rs] = await db.query(sql, [lat, lng, lat, memberId,distance]);
         
-        console.log('##############################')
-        console.log(lat);
-        console.log(lng);
-        console.log(distance);
-        console.log(rs.length)
-        console.log(rs)
-        console.log('##############################')
+     
 
         if (rs && rs.length) {
             return rs;
@@ -102,12 +96,7 @@ class Reslist {
     toString() {
         return JSON.stringify(this.data, null, 4);
     }
-    // TODO : 轉成JS  POW Math.sin COS  asin sqrt round  ok 
-    // TODO: lat1,lng1 => 前端來的座標 呼叫 
-    // TODO: lat2,lng2 => SQL來的座標   
-    // TODO: 算出目前位置跟餐廳的距離
-    // TODO: 把距離用res傳回前端  已經算好的距離回去 
-    //TODO 前端再篩選 再做預設
+  
 
   
 
