@@ -25,13 +25,22 @@ class Cart {
 
   // 取得 Order_Temp 所有商品
     static async getFullList() {
-    // const sql =  `SELECT ot.*,od.* FROM ${tableName} ot LEFT JOIN order_detail od ON ot.Order_Sid=od.Order_sid;
-    // `;
     const sql=`SELECT ot.Sid,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id,pf.product_img FROM ${tableName} ot LEFT JOIN product_food pf ON ot.Product_id=pf.product_id`;
     const [rs] = await db.query(sql);
     return rs;
   }
 
+  // 取得 Order_Temp 會員所屬商品
+  static async getMemberFullList(Member_id) {
+    const sql=`SELECT ot.Sid,ot.Member_id,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id,pf.product_img 
+    FROM order_temp ot 
+    LEFT JOIN product_food pf 
+    ON ot.Product_id=pf.product_id 
+    WHERE ot.Member_id=?`;
+    const [rs] = await db.query(sql,[Member_id]);
+    console.log('回傳',Member_id)
+    return rs;
+  }
 
 
   // 加入 Order_temp
