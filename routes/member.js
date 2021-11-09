@@ -205,8 +205,11 @@ router.get('/member-cart-count', async (req, res) => {
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
     output.success = true;
-    output.count = rs.length == 0 ? 0 : rs.reduce((prev, curr) => { return prev + curr.Order_Amount; }, 0);
-    
+    //收藏商品種類數量用這行
+    output.count = rs.length;
+    //收藏商品數量用這行
+    //output.count = rs.length == 0 ? 0 : rs.reduce((prev, curr) => { return prev + curr.Order_Amount; }, 0);
+
     res.json(output);
 });
 
@@ -314,6 +317,60 @@ router.get('/memberorder', async (req, res) => {
     res.json(output);
 });
 
+//查詢會員訂單訂購人資訊
+router.get('/member-detail-get/:order_sid', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: null
+    }
+
+    const sql = `SELECT ol.Order_Sid order_sid,
+                        ol.Promotion_Amount promotion_amount,
+                        ol.Delivery_Fee delivery_fee,
+                        md.Order_Name order_name,
+                        md.Order_Phone order_phone,
+                        md.E_Mail email,
+                        md.Order_Address order_address,
+                        md.Invoice_Type invoice_type,
+                        md.Invoice_Number invoice_number,
+                        md.Payment_Type payment_type,
+                        md.Order_Remark order_remark
+                   FROM member_detail md
+                   JOIN order_list ol on md.Order_Sid = ol.Order_Sid
+                  WHERE md.Order_Sid = ?`;
+    let [rs] = await db.query(sql, [req.params.order_sid]);
+
+    output.success = true;
+    output.data = rs[0];
+
+    res.json(output);
+});
+
+//查詢會員訂單商品資訊
+router.get('/member-order-detail-get/:order_sid', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+        data: []
+    }
+
+    const sql = `SELECT pf.name,
+                        pf.price,
+                        pf.product_img img,
+                        od.Order_Amount amount
+                   FROM order_detail od
+                   JOIN product_food pf on od.product_id = pf.product_id
+                  WHERE od.Order_Sid = ?`;
+
+    let [rs] = await db.query(sql, [req.params.order_sid]);
+
+    output.success = true;
+    output.data = rs;
+
+    res.json(output);
+});
+
 // ---------------------我的評價------------------------------
 //查詢我的評價
 router.get('/review-data-get/:evaluating', async (req, res) => {
@@ -333,6 +390,7 @@ router.get('/review-data-get/:evaluating', async (req, res) => {
     let sql = `SELECT od.Order_sid order_id, 
                       od.Review_Level 'level', 
                       od.Review_Description description, 
+                      od.Review_Timestamp timestamp,
                       pf.product_id,
                       pf.name product_name, 
                       pf.product_img 
@@ -520,15 +578,43 @@ router.get('/favorite-article-get', async (req, res) => {
         return res.json(output);
     }
 
-    const sql = `SELECT article.sid,
-                        article.ar_title,
-                        article.ar_date,
-                        article.ar_pic
-                   FROM member_fav_article member
-                   JOIN ArtFood article on member.article_id = article.sid
-                  WHERE member.member_id = ?  
-               ORDER BY member.create_at DESC`;
-    let [rs] = await db.query(sql, [req.myAuth.memberid]);
+    const foodSQL = `SELECT article.sid,
+                            article.ar_cate,
+                            article.ar_title,
+                            article.ar_date,
+                            article.ar_pic
+                       FROM member_fav_article member
+                       JOIN artfood article on member.article_id = article.sid
+                      WHERE member.member_id = ?
+                        AND member.article_cate = 1  
+                   ORDER BY member.create_at DESC`;
+    let [food] = await db.query(foodSQL, [req.myAuth.memberid]);
+
+    const exerciseSQL = `SELECT article.sid,
+                                article.ar_cate,
+                                article.ar_title,
+                                article.ar_date,
+                                article.ar_pic
+                           FROM member_fav_article member
+                           JOIN artexercise article on member.article_id = article.sid
+                          WHERE member.member_id = ?  
+                            AND member.article_cate = 2
+                       ORDER BY member.create_at DESC`;
+    let [exercise] = await db.query(exerciseSQL, [req.myAuth.memberid]);
+
+    const recipeSQL = `SELECT article.sid,
+                              article.ar_cate,
+                              article.ar_title,
+                              article.ar_date,
+                              article.ar_pic
+                         FROM member_fav_article member
+                         JOIN artrecipe article on member.article_id = article.sid
+                        WHERE member.member_id = ?  
+                          AND member.article_cate = 3
+                     ORDER BY member.create_at DESC`;
+    let [recipe] = await db.query(recipeSQL, [req.myAuth.memberid]);
+
+    let rs = food.concat(exercise).concat(recipe);
 
     rs.forEach((value) => {
         value.ar_date = moment(value.ar_date).format('YYYY-MM-DD');
@@ -541,17 +627,17 @@ router.get('/favorite-article-get', async (req, res) => {
 });
 
 //移除文章收藏清單文章
-router.delete('/favorite-article-delete/:articleid', async (req, res) => {
+router.delete('/favorite-article-delete/:article_id/:article_cate', async (req, res) => {
     const output = {
         success: false,
         error: ''
     };
-    const sql = `DELETE FROM member_fav_article WHERE article_id = ?`;
+    const sql = `DELETE FROM member_fav_article WHERE article_id = ? AND article_cate = ?`;
     let result;
 
     // 處理刪除資料時可能的錯誤
     try {
-        [result] = await db.query(sql, [req.params.articleid]);
+        [result] = await db.query(sql, [req.params.article_id, req.params.article_cate]);
         if (result.affectedRows === 1) {
             output.success = true;
         }
@@ -575,15 +661,16 @@ router.post('/favorite-article-insert', async (req, res) => {
     }
 
     const sql = "INSERT INTO `member_fav_article`" +
-        "(`member_id`,`article_id`,`create_at`)" +
-        " VALUES (?, ?, NOW())";
+        "(`member_id`,`article_id`,`article_cate`,`create_at`)" +
+        " VALUES (?, ?, ?, NOW())";
     let result;
 
     // 處理新增資料時可能的錯誤
     try {
         [result] = await db.query(sql, [
             req.myAuth.memberid,
-            req.body.articleid
+            req.body.article_id,
+            req.body.article_cate
         ]);
         if (result.affectedRows === 1) {
             output.success = true;
@@ -676,48 +763,6 @@ router.post('/favorite-restaurant-insert', async (req, res) => {
         }
     } catch (ex) {
         output.error = ex.toString();
-    }
-    res.json(output);
-});
-
-//把資料加密成token丟給用戶端
-router.post('/login-jwt', async (req, res) => {
-    const output = {
-        success: false,
-        token: null,
-    };
-    // TODO: 欄位檢查
-    const [rs] = await db.query("SELECT * FROM members WHERE `email`=?", [req.body.email]);
-
-    if (!rs.length) {
-        // 帳號錯誤
-        return res.json(output);
-    }
-
-    const success = await bcrypt.compare(req.body.password, rs[0].password);
-    if (success) {
-        const { id, email } = rs[0];
-
-        output.success = true;
-        output.member = { id, email };
-        output.token = await jwt.sign({ id, email }, process.env.JWT_SECRET);
-    }
-    res.json(output);
-});
-
-router.get('/get-data-jwt', async (req, res) => {
-    const output = {
-        success: false,
-        data: null
-    }
-
-    // 判斷在middleware的時候有沒有通過 jwt 驗證
-    if (req.myAuth && req.myAuth.id) {
-        output.member = req.myAuth;
-        output.success = true;
-        output.data = await getListData(req, res);
-    } else {
-        output.error = '沒有 token或者token不合法';
     }
     res.json(output);
 });
