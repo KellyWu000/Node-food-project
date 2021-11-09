@@ -29,13 +29,7 @@ router.post("/modifyPoint", async (req, res) => {
   }
   
   res.json(await Cart.modifyPoint(
-    req.body.sid,
-    req.body.member_sid,
-    req.body.change_point,
-    req.body.change_type,
-    req.body.left_point,
-    req.body.change_reason,
-    req.body.create_at,
+    req.body
    ))
 });
 
@@ -75,10 +69,7 @@ router.post("/", async (req, res) => {
   }
   
   res.json(await Cart.addtmpList(
-    req.body.Sid,
-    req.body.Member_id,
-    req.body.Product_id,
-    req.body.Order_Amount))
+    req.body))
   });
 
   
@@ -119,20 +110,14 @@ router.post("/addList", async (req, res) => {
     }
     
     res.json(await Cart.addListDetail(
-      req.body.Sid,
-      req.body.Order_Sid,
-      req.body.Member_id,
-      req.body.Order_Name,
-      req.body.Order_Phone,
-      req.body.E_Mail,
-      req.body.Order_Address,
-      req.body.Invoice_Type,
-      req.body.Invoice_Number,
-      req.body.Payment_Type,
-      req.body.Order_Remark,
-      req.body.Created_At,))
+      req.body))
   });
 
+
+  // 讀取單筆 getDetail
+router.get("/getDetail/:id", async (req, res) => {  
+  res.json(await Cart.getDetail(req.params.id))
+});
 
 // 新增 Order_Detail
 router.post("/addDetail", async (req, res) => {  
@@ -142,15 +127,10 @@ router.post("/addDetail", async (req, res) => {
   }
   
   res.json(await Cart.addDetail(
-    req.body.Sid,
-    req.body.Order_Sid,
-    req.body.Order_Name,
-    req.body.Product_id,
-    req.body.Order_Amount,
-    req.body.Promotion_Amount,
-    req.body.Order_Total,
+    req.body
    ))
 });
+
 
 // 新增 Order_List
 router.post("/ConfirmList", async (req, res) => {
@@ -161,11 +141,7 @@ router.post("/ConfirmList", async (req, res) => {
   }
   
   res.json(await Cart.ConfirmList(
-    req.body.Order_Sid,
-    req.body.Member_id,
-    req.body.Total_Price,
-    req.body.Order_Status,
-    req.body.Created_At,
+    req.body,
   ))
 });
 
