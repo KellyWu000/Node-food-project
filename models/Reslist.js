@@ -2,67 +2,13 @@ const db = require('./../modules/connect-mysql');
 const tableName = 'restaurant';
 const pkField = 'res_id';
 
+
 class Reslist {
     constructor(defaultObj={}) {
     
         this.data = defaultObj;  // 抓讀取的參數
     }
-    //     constructor(defaultObj={}) {
-
-    //         this.data = defaultObj;
-    //     }
-
-
-    //  static async findAll(options={}){
-    //         let op = {
-    //             perPage: 6,
-    //             page: 1,
-    //             orderBy: '',
-    //             category: null,
-    //             priceLow: 0,
-    //             priceHigh: 0,
-    //             keyword: '',
-    //             ...options
-    //         };
-    //         const output = {
-    //             perPage: op.perPage,
-    //             page: op.page,
-    //             totalRows: 0,
-    //             totalPages: 0,
-    //             rows: [],
-    //         };
-    //         let where = ' WHERE 1 ';
-    // if(op.category){
-    //     where += ' AND category_sid=' + parseInt(op.category) + ' ';
-    // }
-    // if(op.keyword){
-    //     where += ' AND bookname LIKE ' + db.escape('%' + op.keyword + '%') + ' ';
-    // }
-    // if(op.priceLow){
-    //     where += ' AND price >= ' + parseInt(op.priceLow) + ' ';
-    // }
-    // if(op.priceHigh){
-    //     where += ' AND price <= ' + parseInt(op.priceHigh) + ' ';
-    // }
-
-
-    //         const t_sql = `SELECT COUNT(1) totalRows FROM ${tableName} ${where}`; 
-    //         const [t_rs] = await db.query(t_sql);
-    //         console.log( [t_rs])
-    //         const totalRows = t_rs[0].totalRows;//總比數
-
-    //         if(totalRows>0){
-    //             output.totalRows = totalRows;
-    //             output.totalPages = Math.ceil(totalRows/op.perPage);
-    //             const sql = `SELECT * FROM ${tableName} ${where} LIMIT ${(op.page-1) * op.perPage}, ${op.perPage}`;
-    //             const [rs] = await db.query(sql);
-    //             output.rows = rs;
-    //         }
-
-    //         return output;
-    //     }
-
-    // }
+ 
 
     static async findAll(options = {}) {
 
@@ -99,7 +45,7 @@ class Reslist {
 
     static async findPopular(options = {}) {
       
-        const sql = `SELECT * FROM restaurant WHERE res_id IN (1,2,10)`;
+        const sql = `SELECT * FROM restaurant WHERE res_id IN (1,2,16,24,10,8,19,18)`;
         const [rs] = await db.query(sql);
         if (rs && rs.length) {
             return rs;
@@ -126,12 +72,14 @@ class Reslist {
 
    
 
-
-    static async findRangeByDistance(lat ,lng , distance) {
+  //不用where 用on是因為會影響到原本的列表 只會呈現被收藏過的
+    static async findRangeByDistance(lat ,lng , distance, token) {
         const sql = `SELECT r.*, mfr.sid as isLiked, ( 6371 * acos( cos( radians(?) ) * cos( radians(res_lat)) * cos( radians(res_lng ) - radians(?) ) + sin( radians(?) ) * sin( radians( res_lat ) ) ) ) AS distance FROM restaurant r left join member_fav_restaurant mfr on r.res_id = mfr.restaurant_id and mfr.member_id = ? HAVING distance <= ? ORDER BY distance`;
-        
-        const [rs] = await db.query(sql, [lat, lng, lat, '42',distance]);
 
+        const memberId = token ? token.memberid : '';
+        
+        const [rs] = await db.query(sql, [lat, lng, lat, memberId,distance]);
+        
         console.log('##############################')
         console.log(lat);
         console.log(lng);

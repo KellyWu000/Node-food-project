@@ -1,11 +1,12 @@
 const express = require('express');
+const { JsonWebTokenError } = require('jsonwebtoken');
 const Reslist = require('./../models/Reslist');
 const router = express.Router();
-
+const jwt = require('jsonwebtoken');
 
 
 router.get('/',async(req,res)=>{
-    res.json(await Reslist.findAll()); //別代參數因為抓整筆
+    res.json(await Reslist.findAll()); 
 })
 
 
@@ -13,6 +14,7 @@ router.get('/',async(req,res)=>{
 router.get('/:id',async (req, res) => {
     const output = {
         success: false,
+        error: '',
         data: null,
     };
     output.data = await  Reslist.findOne(req.params.id);
@@ -40,9 +42,11 @@ router.post('/address', async (req, res)=>{
     const lat = req.body.latitude;
     const lng = req.body.longitude;
     const distance = req.body.distance ? req.body.distance : 3;   
-  
-
-    const arr = await Reslist.findRangeByDistance(lat, lng, distance);
+    const token=req.myAuth;
+    console.log(token);
+   
+   
+    const arr = await Reslist.findRangeByDistance(lat, lng, distance, token);
 
     const output = {
         success: true,

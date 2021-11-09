@@ -5,33 +5,14 @@ const tableMember="member_detail";
 const tableOrderList="order_list";
 const tableDetailList="order_detail";
 const DField = "Sid";
+let date= new Date()
 
 class Cart {
   constructor(defaultObj = {}) {
     this.data = defaultObj;
   }
 
-
-  // 取得 Order_Temp 所有商品
-    static async getFullList() {
-    // const sql =  `SELECT ot.*,od.* FROM ${tableName} ot LEFT JOIN order_detail od ON ot.Order_Sid=od.Order_sid;
-    // `;
-    const sql=`SELECT ot.Sid,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id,pf.product_img FROM ${tableName} ot LEFT JOIN product_food pf ON ot.Product_id=pf.product_id`;
-    const [rs] = await db.query(sql);
-    return rs;
-  }
-
-  // 讀取 Order_Temp 單一商品 
-  // static async getList(Sid) {
-  //   const sql = `SELECT * FROM ${tableName} WHERE ${DField}=?`;
-  //   const [rs] = await db.query(sql,[Sid]);
-  //   if (rs && rs.length === 1) {
-  //     return new Cart(rs[0]);
-  //   }
-  //   return null;
-  // }
-
-
+ // 讀取 Order_Temp 單一商品 
   static async getList(Product_id) {
     const sql = `SELECT * FROM ${tableName} WHERE Product_id=?`;
     const [rs] = await db.query(sql,[Product_id]);
@@ -39,6 +20,26 @@ class Cart {
       return new Cart(rs[0]);
     }
     return null;
+  }
+
+
+  // 取得 Order_Temp 所有商品
+    static async getFullList() {
+    const sql=`SELECT ot.Sid,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id,pf.product_img FROM ${tableName} ot LEFT JOIN product_food pf ON ot.Product_id=pf.product_id`;
+    const [rs] = await db.query(sql);
+    return rs;
+  }
+
+  // 取得 Order_Temp 會員所屬商品
+  static async getMemberFullList(Member_id) {
+    const sql=`SELECT ot.Sid,ot.Member_id,ot.Product_id,ot.Order_Amount,pf.name,pf.price,pf.cate_id,pf.product_img 
+    FROM order_temp ot 
+    LEFT JOIN product_food pf 
+    ON ot.Product_id=pf.product_id 
+    WHERE ot.Member_id=?`;
+    const [rs] = await db.query(sql,[Member_id]);
+    console.log('回傳',Member_id)
+    return rs;
   }
 
 
@@ -206,7 +207,7 @@ class Cart {
   }
 
   // 新增 Order_Detail 
-  static async addDetail(Sid,Order_Sid,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
+  static async addDetail(Sid,Order_Sid,Order_Name,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
     const output = {
       success: false,
       error: "",
@@ -222,6 +223,7 @@ class Cart {
     const obj = {
       Sid,
       Order_Sid,
+      Order_Name,
       Product_id,
       Order_Amount,
       Promotion_Amount,

@@ -189,6 +189,27 @@ router.get('/memberprofile', async (req, res) => {
     res.json(output);
 });
 
+//讀取會員購物車數量
+router.get('/member-cart-count', async (req, res) => {
+    const output = {
+        success: false,
+        count: 0
+    }
+
+    //驗證token
+    if (!req.myAuth || !req.myAuth.memberid) {
+        return res.json(output);
+    }
+
+    const sql = `SELECT * FROM order_temp WHERE Member_id = ?`;
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
+
+    output.success = true;
+    output.count = rs.length == 0 ? 0 : rs.reduce((prev, curr) => { return prev + curr.Order_Amount; }, 0);
+    
+    res.json(output);
+});
+
 //讀取會員資料 (忘記密碼)
 router.get('/memberprofile/:email', async (req, res) => {
     const output = {
@@ -295,7 +316,7 @@ router.get('/memberorder', async (req, res) => {
 
 // ---------------------我的評價------------------------------
 //查詢我的評價
-router.get('/memberreview', async (req, res) => {
+router.get('/review-data-get/:evaluating', async (req, res) => {
     const output = {
         success: false,
         error: '',
@@ -309,15 +330,57 @@ router.get('/memberreview', async (req, res) => {
         return res.json(output);
     }
 
-    const sql = `SELECT * FROM member_review WHERE member_id = ?`;
-    let [rs] = await db.query(sql, [req.myAuth.memberid]);
+    let sql = `SELECT od.Order_sid order_id, 
+                      od.Review_Level 'level', 
+                      od.Review_Description description, 
+                      pf.product_id,
+                      pf.name product_name, 
+                      pf.product_img 
+                 FROM order_detail od 
+                 JOIN product_food pf on od.Product_id = pf.product_id
+                 JOIN order_list ol on od.Order_sid = ol.Order_Sid
+                WHERE ol.Member_id = ? `;
 
-    rs.forEach((value) => {
-        value.create_at = moment(value.create_at).format('YYYY-MM-DD');
-    })
+    if (req.params.evaluating == 'true') {
+        sql += `AND od.Review_Level = 0`;
+    } else {
+        sql += `AND od.Review_Level > 0`;
+    }
+
+    let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
     output.success = true;
     output.data = rs;
+
+    res.json(output);
+});
+
+//儲存我的評價
+router.post('/review-data-save', async (req, res) => {
+    const output = {
+        success: false,
+        error: '',
+    }
+
+    const sql = `UPDATE order_detail SET Review_Level = ?, Review_Description = ?, Review_Timestamp = NOW() WHERE Order_sid = ? AND Product_id = ?`
+
+    let product = req.body;
+
+    //過濾未填星等資料
+    product = product.filter((v) => {
+        return v.level > 0;
+    })
+
+    try {
+        await product.forEach((v) => {
+            db.query(sql, [v.level, v.description, v.order_id, v.product_id]);
+        })
+    } catch (ex) {
+        output.error = ex.toString();
+        return res.json(output);
+    }
+
+    output.success = true;
 
     res.json(output);
 });
@@ -358,7 +421,8 @@ router.get('/favorite-product-get', async (req, res) => {
     const output = {
         success: false,
         error: '',
-        data: []
+        data: [],
+        memberID: 0
     }
 
     //驗證token
@@ -369,6 +433,7 @@ router.get('/favorite-product-get', async (req, res) => {
     }
 
     const sql = `SELECT product.sid,
+                        product.product_id,
                         product.name, 
                         product.price, 
                         product.detail_img 
@@ -380,6 +445,7 @@ router.get('/favorite-product-get', async (req, res) => {
 
     output.success = true;
     output.data = rs;
+    output.memberID = req.myAuth.memberid;
 
     res.json(output);
 });

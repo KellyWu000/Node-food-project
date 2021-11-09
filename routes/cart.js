@@ -56,6 +56,13 @@ router.get("/", async (req, res) => {
   res.json(await Cart.getFullList())
 });
 
+// 讀取所屬會員所有 Order_Temp
+router.get("/ordertempmember/:id", async (req, res) => {
+  res.json(await Cart.getMemberFullList(
+    req.params.id
+  ))
+});
+
 
 // 新增 Order_Temp
 router.post("/", async (req, res) => {
@@ -74,6 +81,7 @@ router.post("/", async (req, res) => {
     req.body.Order_Amount))
   });
 
+  
 // 修改 Order_Temp
 router.put("/:id", async (req, res) => {
   res.json(await Cart.updatetmpList(
@@ -136,6 +144,7 @@ router.post("/addDetail", async (req, res) => {
   res.json(await Cart.addDetail(
     req.body.Sid,
     req.body.Order_Sid,
+    req.body.Order_Name,
     req.body.Product_id,
     req.body.Order_Amount,
     req.body.Promotion_Amount,
