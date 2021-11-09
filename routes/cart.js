@@ -134,6 +134,11 @@ router.post("/addList", async (req, res) => {
   });
 
 
+  // 讀取單筆 getDetail
+router.get("/getDetail/:id", async (req, res) => {  
+  res.json(await Cart.getDetail(req.params.id))
+});
+
 // 新增 Order_Detail
 router.post("/addDetail", async (req, res) => {  
   const output={
@@ -150,6 +155,7 @@ router.post("/addDetail", async (req, res) => {
     req.body.Order_Total,
    ))
 });
+
 
 // 新增 Order_List
 router.post("/ConfirmList", async (req, res) => {
