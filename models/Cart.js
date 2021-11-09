@@ -164,6 +164,7 @@ class Cart {
 
 // 讀取 Member_Detail 訂購人
    static async getListDetail(Order_Sid) {
+     console.log('單號',Order_Sid)
     const sql = `SELECT * FROM ${tableMember} WHERE Order_Sid=?`;
     const [rs] = await db.query(sql,[Order_Sid]);
     if (rs && rs.length === 1) {
@@ -207,7 +208,41 @@ class Cart {
      return output;
   }
 
-  // 讀取會員單筆 Order_Detail 
+  // 新增 Order_Detail 
+  static async addDetail(Sid,Order_Sid,Order_Name,Product_id,Order_Amount,Order_Total) {
+    const output = {
+      success: false,
+      error: "",
+    };
+
+       // 不要重複輸入資料
+      //  if (await Cart.getList(Order_Sid)) {
+      //   output.error = "資料重複了";
+      //   return output;
+      // }
+
+          //參數都必須要有資料
+    const obj = {
+      Sid,
+      Order_Sid,
+      Order_Name,
+      Product_id,
+      Order_Amount,
+      Order_Total,
+    };
+
+    const sql = `INSERT INTO ${tableDetailList} SET ?`;
+    const [r] = await db.query(sql,[obj]);
+    output.success = !!r.affectedRows ? true : false;
+
+     // 確認是否有成功加入購物車
+    //  output.cartList=await Cart.getList();
+
+     return output;
+  }
+
+
+  // 讀取會員單筆 Order_Detail
   static async getDetail(Order_Sid) {
  
     const sql = `SELECT * FROM order_list WHERE Order_Sid=?`;
@@ -219,15 +254,6 @@ class Cart {
     return null;
   }
 
-  static async getListDetail(Order_Sid) {
-    console.log('單號',Order_Sid)
-   const sql = `SELECT * FROM ${tableMember} WHERE Order_Sid=?`;
-   const [rs] = await db.query(sql,[Order_Sid]);
-   if (rs && rs.length === 1) {
-     return new Cart(rs[0]);
-   }
-   return null;
- }
 
 
 // 讀取所有 member_point
