@@ -175,7 +175,7 @@ class Cart {
 
 
   // 新增 Order_List
-  static async ConfirmList(Order_Sid,Member_id,Total_Price,Order_Status,Created_At) {
+  static async ConfirmList(Order_Sid,Member_id,Promotion_Amount,Delivery_Fee,Total_Price,Order_Status,Created_At) {
     const output = {
       success: false,
       error: "",
@@ -191,6 +191,8 @@ class Cart {
     const obj = {
       Order_Sid,
       Member_id,
+      Promotion_Amount,
+      Delivery_Fee,
       Total_Price,
       Order_Status,
       Created_At,
@@ -207,7 +209,7 @@ class Cart {
   }
 
   // 新增 Order_Detail 
-  static async addDetail(Sid,Order_Sid,Order_Name,Product_id,Order_Amount,Promotion_Amount,Order_Total) {
+  static async addDetail(Sid,Order_Sid,Order_Name,Product_id,Order_Amount,Order_Total) {
     const output = {
       success: false,
       error: "",
@@ -226,7 +228,6 @@ class Cart {
       Order_Name,
       Product_id,
       Order_Amount,
-      Promotion_Amount,
       Order_Total,
     };
 

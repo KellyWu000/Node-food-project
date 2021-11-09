@@ -147,7 +147,6 @@ router.post("/addDetail", async (req, res) => {
     req.body.Order_Name,
     req.body.Product_id,
     req.body.Order_Amount,
-    req.body.Promotion_Amount,
     req.body.Order_Total,
    ))
 });
@@ -163,6 +162,8 @@ router.post("/ConfirmList", async (req, res) => {
   res.json(await Cart.ConfirmList(
     req.body.Order_Sid,
     req.body.Member_id,
+    req.body.Promotion_Amount,
+    req.body.Delivery_Fee,
     req.body.Total_Price,
     req.body.Order_Status,
     req.body.Created_At,
