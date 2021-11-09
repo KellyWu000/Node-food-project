@@ -2,10 +2,10 @@
 -- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- 主機： localhost
--- 產生時間： 2021 年 11 月 02 日 07:13
--- 伺服器版本： 10.4.20-MariaDB
--- PHP 版本： 7.4.21
+-- 主機： 127.0.0.1
+-- 產生時間： 2021-11-09 15:48:49
+-- 伺服器版本： 10.4.21-MariaDB
+-- PHP 版本： 8.0.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -31,8 +31,23 @@ CREATE TABLE `member_fav_article` (
   `sid` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
   `article_id` int(11) NOT NULL,
+  `article_cate` int(11) NOT NULL,
   `create_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- 傾印資料表的資料 `member_fav_article`
+--
+
+INSERT INTO `member_fav_article` (`sid`, `member_id`, `article_id`, `article_cate`, `create_at`) VALUES
+(39, 55, 5, 1, '2021-11-09 11:43:08'),
+(42, 35, 1, 1, '2021-11-09 22:28:13'),
+(43, 35, 2, 1, '2021-11-09 22:28:14'),
+(44, 35, 3, 1, '2021-11-09 22:28:15'),
+(47, 35, 3, 2, '2021-11-09 22:28:31'),
+(52, 35, 3, 3, '2021-11-09 22:31:57'),
+(53, 35, 1, 2, '2021-11-09 22:31:59'),
+(55, 35, 2, 2, '2021-11-09 22:32:04');
 
 --
 -- 已傾印資料表的索引
@@ -52,7 +67,7 @@ ALTER TABLE `member_fav_article`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member_fav_article`
 --
 ALTER TABLE `member_fav_article`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
