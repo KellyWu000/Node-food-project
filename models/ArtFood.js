@@ -43,7 +43,7 @@ class ArtFood {
 /* 讀取單筆資料 */
     static async findOne(pk=0) {
         const sql = `SELECT * FROM ${tableName} WHERE ${pkField} =?`;
-        const [rs] = await db.query(sql, pk );
+        const [rs] = await db.query(sql, pk);
 
         if (rs && rs.length === 1 ) {
 
@@ -64,7 +64,8 @@ static async findPopular(options = {}) {
 
 /* 文章內文的隨機文章 */
 static async findRand(options = {}) {
-    const sql = `SELECT * FROM ${tableName} ORDER BY RAND() LIMIT 3`;
+    
+    const sql = `SELECT * FROM ${tableName}  ORDER BY RAND() LIMIT 3`;
             const [rs] = await db.query(sql);
             if(rs && rs.length){
                 return rs;
