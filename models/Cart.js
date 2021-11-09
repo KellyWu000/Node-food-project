@@ -5,7 +5,6 @@ const tableMember="member_detail";
 const tableOrderList="order_list";
 const tableDetailList="order_detail";
 const DField = "Sid";
-let date= new Date()
 
 class Cart {
   constructor(defaultObj = {}) {
@@ -44,25 +43,21 @@ class Cart {
 
 
   // 加入 Order_temp
-   static async addtmpList(Sid,Member_id,Product_id,Order_Amount) {
+   static async addtmpList(Added) {
     const output = {
       success: false,
       error: "",
     };
 
     // 不要重複輸入資料
-    if (await Cart.getList(Product_id)) {
+    if (await Cart.getList(Added.Product_id)) {
       output.error = "資料重複了";
       return output;
     }
 
     //參數都必須要有資料
-    const obj = {
-      Sid,
-      Member_id,
-      Product_id,
-      Order_Amount,
-    };
+    let obj = {...Added}
+    console.log('加入',obj)
 
     const sql = `INSERT INTO ${tableName} SET ?`;
     const [r] = await db.query(sql, [obj]);
@@ -123,33 +118,17 @@ class Cart {
 
 
   // 新增 Member_Detail
-  static async addListDetail(Sid,Order_Sid,Member_id,Order_Name,Order_Phone,E_Mail,Order_Address,Invoice_Type,Invoice_Number,Payment_Type,Order_Remark,Created_At) {
+  static async addListDetail(AddMemberDetail) {
 
     const output = {
       success: false,
       error: "",
     };
 
-       // 不要重複輸入資料
-      //  if (await Cart.getListDetail(Order_Sid)) {
-      //   output.error = "資料重複了";
-      //   return output;
-      // }
 
-          //參數都必須要有資料
+    //參數都必須要有資料
     const obj = {
-      Sid,
-      Order_Sid,
-      Member_id,
-      Order_Name,
-      Order_Phone,
-      E_Mail,
-      Order_Address,
-      Invoice_Type,
-      Invoice_Number,
-      Payment_Type,
-      Order_Remark,
-      Created_At,
+   ...AddMemberDetail
     };
 
     const sql = `INSERT INTO ${tableMember} SET ?`;
@@ -175,27 +154,21 @@ class Cart {
 
 
   // 新增 Order_List
-  static async ConfirmList(Order_Sid,Member_id,Promotion_Amount,Delivery_Fee,Total_Price,Order_Status,Created_At) {
+  static async ConfirmList(OrderList) {
     const output = {
       success: false,
       error: "",
     };
 
        // 不要重複輸入資料
-       if (await Cart.getList(Order_Sid)) {
+       if (await Cart.getList(OrderList.Order_Sid)) {
         output.error = "資料重複了";
         return output;
       }
 
           //參數都必須要有資料
     const obj = {
-      Order_Sid,
-      Member_id,
-      Promotion_Amount,
-      Delivery_Fee,
-      Total_Price,
-      Order_Status,
-      Created_At,
+  ...OrderList
     };
 
     const sql = `INSERT INTO ${tableOrderList} SET ?`;
@@ -209,26 +182,16 @@ class Cart {
   }
 
   // 新增 Order_Detail 
-  static async addDetail(Sid,Order_Sid,Order_Name,Product_id,Order_Amount,Order_Total) {
+  static async addDetail(OrderDetail) {
     const output = {
       success: false,
       error: "",
     };
 
-       // 不要重複輸入資料
-      //  if (await Cart.getList(Order_Sid)) {
-      //   output.error = "資料重複了";
-      //   return output;
-      // }
 
           //參數都必須要有資料
     const obj = {
-      Sid,
-      Order_Sid,
-      Order_Name,
-      Product_id,
-      Order_Amount,
-      Order_Total,
+ ...OrderDetail
     };
 
     const sql = `INSERT INTO ${tableDetailList} SET ?`;
@@ -264,25 +227,21 @@ static async getMPList() {
 }
 
 // 新增單筆 member_point
-static async modifyPoint(sid,member_sid,change_point,change_type,left_point,change_reason,create_at) {
+static async modifyPoint(MemberPoint) {
 
   const output = {
     success: false,
     error: "",
   };
 
-  create_at=date;
+  // create_at=date;
  
 //參數都必須要有資料
   const obj = {
-    sid,
-    member_sid,
-    change_point,
-    change_type,
-    left_point,
-    change_reason,
-    create_at,
+   ...MemberPoint
   };
+
+  console.log('會員',obj)
 
   const sql = `INSERT INTO member_point SET ?`;
   const [r] = await db.query(sql,[obj]);
