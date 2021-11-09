@@ -25,6 +25,8 @@ router.get('/:id',async (req, res) => {
     res.json(output);
 } );
 
+
+
 //讀取熱門文章
 router.get('/RecipeContent/popluar',async(req,res)=>{
     res.json(await ArtRecipe.findPopular()); 

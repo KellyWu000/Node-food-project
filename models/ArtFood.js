@@ -62,17 +62,26 @@ static async findPopular(options = {}) {
             return null;
         }
 
-/* 隨機文章 */
+/* 文章內文的隨機文章 */
 static async findRand(options = {}) {
     const sql = `SELECT * FROM ${tableName} ORDER BY RAND() LIMIT 3`;
             const [rs] = await db.query(sql);
             if(rs && rs.length){
                 return rs;
             }
-            return null;
+            return output;
         }
 
+/* 給首頁的隨機文章2 */
+static async findTwoRand(current_sid=1, limit=2) {
 
+    const sql = `SELECT * FROM ${tableName} WHERE sid!=${current_sid} ORDER BY RAND() LIMIT ${limit}`;
+            const [rs] = await db.query(sql);
+            if(rs && rs.length){
+                return rs;
+            }
+            return null;
+        }
 
 
     toJSON() {
