@@ -2,8 +2,8 @@
 -- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- 主機： localhost
--- 產生時間： 2021 年 10 月 29 日 19:47
+-- 主機： 127.0.0.1
+-- 產生時間： 2021-11-09 19:24:16
 -- 伺服器版本： 10.4.20-MariaDB
 -- PHP 版本： 7.4.21
 
@@ -34,8 +34,21 @@ CREATE TABLE `member_point` (
   `change_type` varchar(255) NOT NULL,
   `left_point` int(6) NOT NULL,
   `change_reason` varchar(255) NOT NULL,
-  `create_at` datetime NOT NULL
+  `create_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- 傾印資料表的資料 `member_point`
+--
+
+INSERT INTO `member_point` (`sid`, `member_sid`, `change_point`, `change_type`, `left_point`, `change_reason`, `create_at`) VALUES
+(2, 5, 50, 'GET', 50, '新進會員贈點', '2021-11-02 23:27:23'),
+(17, 5, 20, 'USE', 30, '會員使用點數', '2021-11-09 11:59:46'),
+(18, 7, 50, 'GET', 50, '新進會員贈點', '2021-11-09 13:39:25'),
+(19, 7, 30, 'USE', 20, '會員使用點數', '2021-11-09 14:17:05'),
+(20, 7, 10, 'USE', 10, '會員使用點數', '2021-11-09 14:17:05'),
+(21, 8, 50, 'GET', 50, '新進會員贈點', '2021-11-09 17:20:28'),
+(22, 8, 20, 'USE', 30, '會員使用點數', '2021-11-09 19:19:56');
 
 --
 -- 已傾印資料表的索引
@@ -55,7 +68,7 @@ ALTER TABLE `member_point`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `member_point`
 --
 ALTER TABLE `member_point`
-  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
