@@ -90,9 +90,11 @@ router.delete("/:id", async (req, res) => {
 
 });
 
-//清空 Order_Temp
-router.delete("/", async (req, res) => {
-  res.json(await Cart.TruncatetmpList());
+//清空單一會員 Order_Temp
+router.delete("/truncate/:id", async (req, res) => {
+  res.json(await Cart.TruncatetmpList(
+    req.params.id
+  ));
 
 });
 

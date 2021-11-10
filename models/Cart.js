@@ -107,13 +107,17 @@ class Cart {
   }
 
   // 清空購物車
-  static async TruncatetmpList(){
+  static async TruncatetmpList(Member_id){
     const output = {
       success: false,
       error: "",
     };
-    const sql = `TRUNCATE TABLE ${tableName}`;
-    const [r] = await db.query(sql);
+    const sql = `DELETE FROM ${tableName} WHERE Member_id=?`;
+    const [r] = await db.query(sql,[Member_id]);
+    output.success = !!r.affectedRows ? true : false;
+
+    return output;
+
   }
 
 
