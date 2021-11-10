@@ -224,9 +224,15 @@ class Cart {
 
 
 // 讀取所有 member_point
-static async getMPList() {
-  const sql=`SELECT mp.*,m.email,m.mobile,m.address,m.name FROM member_point mp LEFT JOIN members m ON m.sid=mp.member_sid ORDER BY create_at DESC`;
-  const [rs] = await db.query(sql);
+// static async getMPList() {
+//   const sql=`SELECT mp.*,m.email,m.mobile,m.address,m.name FROM member_point mp LEFT JOIN members m ON m.sid=mp.member_sid ORDER BY create_at DESC`;
+//   const [rs] = await db.query(sql);
+//   return rs;
+// }
+
+static async getMPList(Member_id) {
+  const sql=`SELECT mp.*,m.email,m.mobile,m.address,m.name FROM member_point mp LEFT JOIN members m ON m.sid=mp.member_sid WHERE mp.member_sid=? ORDER BY create_at DESC`;
+  const [rs] = await db.query(sql,[Member_id]);
   return rs;
 }
 

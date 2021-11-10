@@ -34,8 +34,8 @@ router.post("/modifyPoint", async (req, res) => {
 });
 
 // 讀取 Member Point
-router.get("/memberpoint", async (req, res) => {
-  res.json(await Cart.getMPList())
+router.get("/memberpoint/:id", async (req, res) => {
+  res.json(await Cart.getMPList(req.params.id))
 });
 
 
