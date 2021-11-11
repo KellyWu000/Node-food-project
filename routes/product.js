@@ -42,7 +42,7 @@ router.get('/fav/:mid', async (req, res) => {
     const sql = "SELECT product_id FROM `member_fav_product` WHERE `member_id`=?";
     let rs;
     [rs] = await db.query(sql, [req.params.mid])
-    output.data = rs;
+    
     // if(output.data){
     //     output.success = true;
     //     if()
@@ -54,6 +54,10 @@ router.get('/fav/:mid', async (req, res) => {
         output.data = rs;
     }
     */
+   if(rs.length!==0){
+    output.data = rs;
+    output.success = true
+   }
     res.json(output)
 })
 
