@@ -63,7 +63,7 @@ router.post('/QA/:id', async (req, res) => {
     if (result.affectedRows === 1 && result.changedRows === 1) {
 
         // SELECT SUM(`change_point`) c_points  FROM `member_point` WHERE `member_sid`=53
-        const sqlsub = "SELECT `change_point` sub_points  FROM `member_point` WHERE `change_type`='USE' AND `member_sid`=?";
+        const sqlsub = "SELECT SUM(`change_point`) sub_points  FROM `member_point` WHERE `change_type`='USE' AND `member_sid`=?";
         const sql1 = "SELECT SUM(`change_point`) c_points  FROM `member_point` WHERE `change_type`='GET' AND `member_sid`=?";
 
         const [rssub] = await db.query(sqlsub, [req.myAuth.memberid]);
