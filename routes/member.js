@@ -304,7 +304,7 @@ router.get('/memberorder', async (req, res) => {
         return res.json(output);
     }
 
-    const sql = `SELECT * FROM order_list WHERE Member_id = ?`;
+    const sql = `SELECT * FROM order_list WHERE Member_id = ? ORDER BY Created_At DESC`;
     let [rs] = await db.query(sql, [req.myAuth.memberid]);
 
     rs.forEach((value) => {
