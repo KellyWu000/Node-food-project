@@ -115,6 +115,13 @@ router.post("/addList", async (req, res) => {
       req.body))
   });
 
+// 刪除會員單筆 Member_Detail
+router.delete("/deleteList/:id", async (req, res) => {
+    res.json(await Cart.DeleteListDetail(
+      req.params.id,
+      ))
+  });
+
 
   // 讀取單筆 getDetail
 router.get("/getDetail/:id", async (req, res) => {  

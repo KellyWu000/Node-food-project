@@ -156,6 +156,16 @@ class Cart {
     return null;
   }
 
+  // 刪除 Member_Detail 訂購人
+  static async DeleteListDetail(Member_id) {
+   const sql = `DELETE FROM ${tableMember} WHERE Member_id=? ORDER BY Created_At DESC LIMIT 1`;
+   const [rs] = await db.query(sql,[Member_id]);
+   if (rs && rs.length === 1) {
+     return new Cart(rs[0]);
+   }
+   return null;
+ }
+
 
   // 新增 Order_List
   static async ConfirmList(OrderList) {
